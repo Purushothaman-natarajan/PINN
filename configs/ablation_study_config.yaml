@@ -1,0 +1,18 @@
+# Ablation / parameter-sweep configuration.
+# The sweep runner loads `base_config`, overrides `physics` entries with
+# each cartesian combination, retrains (or re-evaluates) and aggregates
+# metrics + SHAP sensitivities.
+
+base_config: configs/default_trihybrid_ltne.yaml
+
+sweep:
+  M: [0.0, 1.0, 2.0]
+  Rd: [0.0, 0.5, 1.0]
+  Fr: [0.0, 0.2, 0.5]
+  Hs: [0.5, 1.0, 2.0]
+
+options:
+  mode: train           # train | evaluate (evaluate reuses saved checkpoints)
+  epochs_override: 5000 # lightweight runs for sweeps; null => use base config
+  output_csv: data/processed/ablation_results.csv
+  parallel: false

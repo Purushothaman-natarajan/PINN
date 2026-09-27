@@ -1,0 +1,16 @@
+torch
+pyyaml
+numpy
+scipy
+matplotlib
+shap
+scikit-learn
+pandas
+pytest
+checkpoints/
+__pycache__/
+*.pyc
+data/raw/*.npz
+data/processed/*.json
+data/processed/*.csv
+data/processed/figures/
