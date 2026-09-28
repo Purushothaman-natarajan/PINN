@@ -8,8 +8,9 @@ __pycache__/
 # Virtual envs
 .venv/
 venv/
-# Generated data artefacts
+# Generated data artefacts (regenerate with --mode mock; see docs)
 data/raw/*.npz
+data/processed/*.npz
 data/processed/*.json
 data/processed/*.csv
 data/processed/figures/
