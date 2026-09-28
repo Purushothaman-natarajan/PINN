@@ -1,0 +1,103 @@
+site_name: Trihybrid LTNE PINN
+site_description: >-
+  Config-driven Physics-Informed Neural Network (PyTorch) for trihybrid
+  nanofluid flow, heat and mass transfer in a coaxial cylinder with LTNE,
+  Darcy-Forchheimer porous medium and magnetic field.
+site_author: Purushothaman Natarajan
+repo_url: https://github.com/Purushothaman-natarajan/PINN
+repo_name: PINN
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.arithmatex:
+      generic: true
+  - toc:
+      permalink: true
+  - tables
+  - footnotes
+
+extra_javascript:
+  - https://unpkg.com/mermaid@10/dist/mermaid.min.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+extra:
+  mermaid: |
+    mermaid.initialize({ startOnLoad: true })
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_source: true
+            show_root_heading: true
+            heading_level: 2
+            docstring_style: google
+
+nav:
+  - Home: index.md
+  - Getting started:
+      - Quickstart: quickstart.md
+      - Architecture: architecture.md
+  - Configuration & physics:
+      - Configuration reference: configuration.md
+      - Equation catalog: equations.md
+      - Parameter guide: parameters.md
+  - Guides:
+      - Extending the repo: extending.md
+      - Training: training.md
+      - Validation: validation.md
+      - Explainability (SHAP + LIME): explainability.md
+      - Parameter sweeps: sweeps.md
+      - FAQ & troubleshooting: faq.md
+  - API reference:
+      - Overview: api/index.md
+      - core.config_loader: api/config_loader.md
+      - core.fluid_properties: api/fluid_properties.md
+      - models.pinn_architecture: api/pinn_architecture.md
+      - physics.governing_equations: api/governing_equations.md
+      - physics.boundary_conditions: api/boundary_conditions.md
+      - solvers.pinn_trainer: api/pinn_trainer.md
+      - solvers.numerical_rk45: api/numerical_rk45.md
+      - analysis.validation: api/validation.md
+      - analysis.shap_explainer: api/shap_explainer.md
+      - analysis.lime_explainer: api/lime_explainer.md
+      - analysis.visualization: api/visualization.md
+  - Changelog: changelog.md
+
+strict: true

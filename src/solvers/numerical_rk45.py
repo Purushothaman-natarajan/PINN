@@ -128,14 +128,24 @@ def _bc_fun(
     yb: np.ndarray,
     coeffs: Dict[str, float],
 ) -> np.ndarray:
-    """Boundary residuals: 9 conditions for the 9-state system."""
+    """Boundary residuals: 9 conditions for the 9-state system.
+
+    Mirrors :mod:`src.physics.boundary_conditions`: Dirichlet
+    ``theta_f(0) = 1`` by default, Robin ``theta_f'(0) + Bi_f*(theta_f(0)-1)``
+    when ``Bi_f`` is set.
+    """
     slip = float(coeffs.get("slip", 0.0))
     omega = float(coeffs.get("omega", 0.0))
+    bi_f = coeffs.get("Bi_f", None)
+    if bi_f is None:
+        tf_inner = ya[3] - 1.0  # theta_f(0) = 1
+    else:
+        tf_inner = ya[4] + float(bi_f) * (ya[3] - 1.0)  # Robin
     return np.array(
         [
             ya[0] - 0.0,  # f(0) = 0
             ya[1] - (1.0 + slip * ya[2]),  # f'(0) = 1 + slip f''(0)
-            ya[3] - 1.0,  # theta_f(0) = 1
+            tf_inner,
             ya[5] - 1.0,  # theta_s(0) = 1
             ya[7] - 1.0,  # phi(0) = 1
             yb[1] - omega,  # f'(eta0) = omega

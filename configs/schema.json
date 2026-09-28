@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Purushothaman-natarajan/PINN/blob/master/configs/schema.json",
+  "title": "Trihybrid LTNE PINN configuration",
+  "description": "Schema for configs/default_trihybrid_ltne.yaml. See docs/configuration.md.",
+  "type": "object",
+  "required": ["domain", "physics", "nanofluid", "equations", "model", "training", "solver"],
+  "additionalProperties": true,
+  "properties": {
+    "domain": {
+      "type": "object",
+      "required": ["eta0", "n_collocation"],
+      "properties": {
+        "eta0": {"type": "number", "exclusiveMinimum": 0, "description": "Outer similarity coordinate."},
+        "n_collocation": {"type": "integer", "minimum": 8, "description": "Interior collocation points per iteration."},
+        "dtype": {"type": "string", "enum": ["float32", "float64"], "default": "float32"},
+        "seed": {"type": "integer", "default": 0}
+      }
+    },
+    "physics": {
+      "type": "object",
+      "properties": {
+        "M": {"type": "number", "minimum": 0, "description": "Magnetic parameter."},
+        "Fr": {"type": "number", "minimum": 0, "description": "Forchheimer coefficient."},
+        "Kp": {"type": "number", "minimum": 0, "description": "Porous parameter 1/Da."},
+        "Rd": {"type": "number", "minimum": 0, "description": "Thermal radiation parameter."},
+        "Pr": {"type": "number", "exclusiveMinimum": 0, "description": "Prandtl number."},
+        "Ec": {"type": "number", "minimum": 0, "description": "Eckert number."},
+        "Hs": {"type": "number", "minimum": 0, "description": "LTNE interphase coeff, fluid side."},
+        "Hsg": {"type": "number", "minimum": 0, "description": "LTNE interphase coeff, solid side."},
+        "Sc": {"type": "number", "exclusiveMinimum": 0, "description": "Schmidt number."},
+        "Kr": {"type": "number", "minimum": 0, "description": "Chemical reaction rate."},
+        "Sr": {"type": "number", "minimum": 0, "description": "Soret coupling coefficient."},
+        "Q": {"type": "number", "description": "Volumetric heat source/sink."},
+        "gamma_curv": {"type": "number", "minimum": 0, "description": "Cylinder curvature parameter."},
+        "slip": {"type": "number", "minimum": 0, "description": "Velocity slip at inner wall."},
+        "Bi_f": {"type": ["number", "null"], "minimum": 0, "description": "Biot number; null selects Dirichlet theta_f=1."},
+        "omega_ratio": {"type": "number", "description": "Outer f'(eta0) rotation ratio."},
+        "f_outer": {"type": ["number", "null"], "description": "Reserved; outer f left free when null."}
+      }
+    },
+    "nanofluid": {
+      "type": "object",
+      "required": ["rho_f", "mu_f", "k_f", "cp_f", "particles"],
+      "properties": {
+        "base_fluid": {"type": "string", "default": "water"},
+        "rho_f": {"type": "number", "exclusiveMinimum": 0},
+        "mu_f": {"type": "number", "exclusiveMinimum": 0},
+        "k_f": {"type": "number", "exclusiveMinimum": 0},
+        "cp_f": {"type": "number", "exclusiveMinimum": 0},
+        "sigma_f": {"type": "number", "minimum": 0},
+        "particles": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 3,
+          "items": {
+            "type": "object",
+            "required": ["rho", "k", "cp", "phi"],
+            "properties": {
+              "name": {"type": "string"},
+              "rho": {"type": "number", "exclusiveMinimum": 0},
+              "k": {"type": "number", "exclusiveMinimum": 0},
+              "cp": {"type": "number", "exclusiveMinimum": 0},
+              "sigma": {"type": "number", "minimum": 0},
+              "phi": {"type": "number", "minimum": 0, "maximum": 0.2}
+            }
+          }
+        }
+      }
+    },
+    "equations": {
+      "type": "object",
+      "required": ["momentum_terms", "fluid_energy_terms", "solid_energy_terms", "concentration_terms"],
+      "properties": {
+        "momentum_terms": {"type": "array", "items": {"type": "string", "enum": ["viscous", "inertia", "magnetic", "darcy", "forchheimer", "curvature"]}},
+        "fluid_energy_terms": {"type": "array", "items": {"type": "string", "enum": ["conduction", "radiation", "advection", "interphase", "joule", "heat_source"]}},
+        "solid_energy_terms": {"type": "array", "items": {"type": "string", "enum": ["conduction", "interphase"]}},
+        "concentration_terms": {"type": "array", "items": {"type": "string", "enum": ["diffusion", "advection", "reaction", "soret"]}}
+      }
+    },
+    "model": {
+      "type": "object",
+      "required": ["hidden_layers"],
+      "properties": {
+        "input_dim": {"type": "integer", "const": 1, "default": 1},
+        "output_dim": {"type": "integer", "const": 4, "default": 4},
+        "hidden_layers": {"type": "array", "minItems": 1, "items": {"type": "integer", "minimum": 1}},
+        "activation": {"type": "string", "enum": ["tanh", "relu", "gelu", "silu", "swish", "elu", "sigmoid"], "default": "tanh"},
+        "initialization": {"type": "string", "enum": ["xavier", "kaiming", "default"], "default": "xavier"},
+        "output_activation": {"type": "string", "const": "linear", "default": "linear"}
+      }
+    },
+    "training": {
+      "type": "object",
+      "required": ["epochs"],
+      "properties": {
+        "epochs": {"type": "integer", "minimum": 1},
+        "lr": {"type": "number", "exclusiveMinimum": 0, "default": 0.001},
+        "optimizer": {"type": "string", "enum": ["adam", "lbfgs"], "default": "adam"},
+        "scheduler": {
+          "type": ["object", "null"],
+          "required": ["type"],
+          "properties": {
+            "type": {"type": "string", "const": "step"},
+            "step_size": {"type": "integer", "minimum": 1},
+            "gamma": {"type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1}
+          }
+        },
+        "pde_weight": {"type": "number", "minimum": 0, "default": 1.0},
+        "bc_weight": {"type": "number", "minimum": 0, "default": 10.0},
+        "log_every": {"type": "integer", "minimum": 1, "default": 500},
+        "device": {"type": "string", "enum": ["auto", "cpu", "cuda"], "default": "auto"},
+        "checkpoint_dir": {"type": "string", "default": "checkpoints"},
+        "save_every": {"type": "integer", "minimum": 1, "default": 2000}
+      }
+    },
+    "solver": {
+      "type": "object",
+      "properties": {
+        "bvp_mesh": {"type": "integer", "minimum": 10, "default": 200},
+        "tol": {"type": "number", "exclusiveMinimum": 0, "default": 1e-8},
+        "max_nodes": {"type": "integer", "minimum": 100, "default": 2000}
+      }
+    },
+    "outputs": {
+      "type": "object",
+      "properties": {
+        "raw_dir": {"type": "string", "default": "data/raw"},
+        "processed_dir": {"type": "string", "default": "data/processed"},
+        "baseline_file": {"type": "string", "default": "baseline.npz"},
+        "metrics_file": {"type": "string", "default": "metrics.json"}
+      }
+    }
+  }
+}

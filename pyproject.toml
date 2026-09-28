@@ -14,10 +14,17 @@ dependencies = [
   "pandas>=2.0",
   "shap>=0.44",
   "lime>=0.2",
+  "jsonschema>=4.0",
 ]
 
 [project.optional-dependencies]
 dev = ["pytest>=7.0", "black", "ruff"]
+docs = [
+  "mkdocs>=1.6",
+  "mkdocs-material>=9.0",
+  "mkdocstrings>=1.0",
+  "mkdocstrings-python>=1.0",
+]
 
 [build-system]
 requires = ["setuptools>=61"]

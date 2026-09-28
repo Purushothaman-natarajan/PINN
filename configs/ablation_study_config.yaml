@@ -2,6 +2,8 @@
 # The sweep runner loads `base_config`, overrides `physics` entries with
 # each cartesian combination, retrains (or re-evaluates) and aggregates
 # metrics + SHAP sensitivities.
+# Docs: docs/sweeps.md. Any `physics:` key from docs/configuration.md
+# can be swept — just add it under `sweep:`.
 
 base_config: configs/default_trihybrid_ltne.yaml
 

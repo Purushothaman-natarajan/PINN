@@ -3,6 +3,9 @@
 # All physics, model, and training choices are config-driven (no hardcoding).
 # Equations are selected via the `equations` block: toggle terms without
 # editing Python code.
+# Docs: docs/configuration.md (every key), docs/equations.md (term math),
+#   docs/parameters.md (choosing values), docs/extending.md (adding new keys).
+# Schema: configs/schema.json (validated automatically on load).
 
 domain:
   eta0: 4.0
@@ -42,19 +45,19 @@ nanofluid:
       rho: 3970.0
       k: 40.0
       cp: 765.0
-      sigma: 3.5e6
+      sigma: 3.5e+6
       phi: 0.01
     - name: Cu
       rho: 8933.0
       k: 400.0
       cp: 385.0
-      sigma: 5.96e7
+      sigma: 5.96e+7
       phi: 0.01
     - name: TiO2
       rho: 4250.0
       k: 8.95
       cp: 686.2
-      sigma: 2.38e6
+      sigma: 2.38e+6
       phi: 0.01
 
 # Equation selection: the governing PDE is assembled dynamically from

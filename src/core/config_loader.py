@@ -2,10 +2,15 @@
 
 All fluid parameters, layer sizes, and training hyper-parameters must come
 from YAML files. This module is the single entry point for configs.
+
+Validation is two-stage: required top-level blocks are always checked, then
+``configs/schema.json`` is enforced when the ``jsonschema`` package is
+available (it is a declared dependency). See ``docs/configuration.md``.
 """
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Any, Dict
 
@@ -23,6 +28,50 @@ REQUIRED_TOP_KEYS = (
     "solver",
 )
 
+_SCHEMA_CACHE: Dict[str, Any] | None = None
+
+
+def _load_schema() -> Dict[str, Any] | None:
+    """Load ``configs/schema.json`` located next to the ``configs`` dir.
+
+    Returns ``None`` when the schema file or ``jsonschema`` is unavailable,
+    in which case only the structural checks below apply.
+    """
+    global _SCHEMA_CACHE
+    if _SCHEMA_CACHE is not None:
+        return _SCHEMA_CACHE
+    try:
+        schema_path = Path(__file__).resolve().parents[2] / "configs" / "schema.json"
+        with schema_path.open("r", encoding="utf-8") as fh:
+            _SCHEMA_CACHE = json.load(fh)
+    except (OSError, json.JSONDecodeError):
+        _SCHEMA_CACHE = None
+    return _SCHEMA_CACHE
+
+
+def validate_config(cfg: Dict[str, Any]) -> None:
+    """Validate a config dict against ``configs/schema.json``.
+
+    Args:
+        cfg: Configuration dictionary (as returned by YAML parsing).
+
+    Raises:
+        ValueError: If the config violates the schema, with the offending
+            key path and constraint in the message.
+    """
+    try:
+        import jsonschema  # type: ignore[import-not-found]
+    except ImportError:
+        return  # structural checks in load_config still apply
+    schema = _load_schema()
+    if schema is None:
+        return
+    try:
+        jsonschema.validate(cfg, schema)
+    except jsonschema.ValidationError as exc:
+        location = "/".join(str(p) for p in exc.absolute_path) or "<root>"
+        raise ValueError(f"Invalid config at '{location}': {exc.message}") from exc
+
 
 def load_config(path: str | Path) -> Dict[str, Any]:
     """Load and validate a YAML configuration file.
@@ -35,7 +84,8 @@ def load_config(path: str | Path) -> Dict[str, Any]:
 
     Raises:
         FileNotFoundError: If the config file does not exist.
-        ValueError: If required top-level keys are missing.
+        ValueError: If required top-level keys are missing or any value
+            violates ``configs/schema.json``.
     """
     cfg_path = Path(path)
     if not cfg_path.is_file():
@@ -47,6 +97,7 @@ def load_config(path: str | Path) -> Dict[str, Any]:
         raise ValueError(f"Config {cfg_path} missing keys: {missing}")
     _validate_model(cfg["model"])
     _validate_equations(cfg["equations"])
+    validate_config(cfg)
     return cfg
 
 

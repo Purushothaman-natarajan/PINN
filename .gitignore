@@ -1,16 +1,21 @@
-torch
-pyyaml
-numpy
-scipy
-matplotlib
-shap
-scikit-learn
-pandas
-pytest
+# Build / site output
+site/
+# Checkpoints and caches
 checkpoints/
 __pycache__/
 *.pyc
+.pytest_cache/
+# Virtual envs
+.venv/
+venv/
+# Generated data artefacts
 data/raw/*.npz
 data/processed/*.json
 data/processed/*.csv
 data/processed/figures/
+data/processed/shap/
+data/processed/lime/
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/

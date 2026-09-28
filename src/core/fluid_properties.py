@@ -143,18 +143,20 @@ class TrihybridProperties:
 
     def combined_coefficients(
         self, physics: Dict[str, Any]
-    ) -> Dict[str, float]:
+    ) -> Dict[str, Any]:
         """Merge nanofluid ratios with physics params into PDE coefficients.
 
         Args:
             physics: The ``physics`` config block.
 
         Returns:
-            Flat coefficient dict consumed by PDEs and BVP solver.
+            Flat coefficient dict consumed by PDEs and BVP solver. Wall
+            parameters that admit ``null`` (``Bi_f``, ``f_outer``) are passed
+            through unchanged so ``None`` keeps its "feature off" meaning.
         """
         a = self.a_coefficients()
         e = self.effective()
-        coeffs: Dict[str, float] = dict(a)
+        coeffs: Dict[str, Any] = dict(a)
         coeffs.update(
             {
                 "M": float(physics.get("M", 0.0)),
@@ -172,12 +174,18 @@ class TrihybridProperties:
                 "gamma": float(physics.get("gamma_curv", 0.0)),
                 "slip": float(physics.get("slip", 0.0)),
                 "omega": float(physics.get("omega_ratio", 0.0)),
+                "Bi_f": physics.get("Bi_f", None),
+                "f_outer": physics.get("f_outer", None),
                 "k_ratio": float(e["k_ratio"]),
                 "sigma_ratio": float(e["sigma_ratio"]),
                 "rho_cp_ratio": float(e["rho_cp_ratio"]),
                 "mu_ratio": float(e["mu_ratio"]),
             }
         )
+        if coeffs["Bi_f"] is not None:
+            coeffs["Bi_f"] = float(coeffs["Bi_f"])
+        if coeffs["f_outer"] is not None:
+            coeffs["f_outer"] = float(coeffs["f_outer"])
         return coeffs
 
 
