@@ -13,10 +13,10 @@
       
       
       
-        <link rel="prev" href="../explainability/">
+        <link rel="prev" href="..">
       
       
-        <link rel="next" href="../faq/">
+        <link rel="next" href="../quickstart/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Parameter sweeps - Trihybrid LTNE PINN</title>
+        <title>Learn the methods - Trihybrid LTNE PINN</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#parameter-sweeps" class="md-skip">
+        <a href="#learn-the-methods" class="md-skip">
           Skip to content
         </a>
       
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Parameter sweeps
+              Learn the methods
             
           </span>
         </div>
@@ -246,9 +246,11 @@
   
   
   
+    
   
-    <li class="md-tabs__item">
-      <a href="../learn/" class="md-tabs__link">
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
         
   
   
@@ -305,12 +307,10 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
+      <li class="md-tabs__item">
         <a href="../extending/" class="md-tabs__link">
           
   
@@ -438,10 +438,37 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../learn/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learn the methods
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -457,6 +484,202 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#at-a-glance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        At a glance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-physics-informed-neural-networks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Physics-Informed Neural Networks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-automatic-differentiation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Automatic differentiation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-collocation-on-resampled-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Collocation on resampled points
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-loss-weighting-fixed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Loss weighting (fixed)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#56-adam-and-l-bfgs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5–6. Adam and L-BFGS
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-network-tanh-mlp-with-xavier-init" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Network: Tanh MLP with Xavier init
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-similarity-reduction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Similarity reduction
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#910-trihybrid-effective-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9–10. Trihybrid effective properties
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-darcyforchheimer-porous-medium" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Darcy–Forchheimer porous medium
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-ltne-two-temperature-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. LTNE (two-temperature) model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-mhd-effects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. MHD effects
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#14-thermal-radiation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14. Thermal radiation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#15-soret-effect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        15. Soret effect
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#16-independent-bvp-baseline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16. Independent BVP baseline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1718-explainability-shap-and-lime" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17–18. Explainability: SHAP and LIME
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -727,31 +950,28 @@
       
   
   
-    
   
   
-  
     
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
             
   
   
@@ -769,7 +989,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
@@ -896,37 +1116,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Parameter sweeps
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../sweeps/" class="md-nav__link">
         
   
   
@@ -942,48 +1135,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#ablation-config" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Ablation config
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#scaling-up" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Scaling up
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1475,10 +1626,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#ablation-config" class="md-nav__link">
+  <a href="#at-a-glance" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Ablation config
+        At a glance
       
     </span>
   </a>
@@ -1486,10 +1637,164 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#scaling-up" class="md-nav__link">
+  <a href="#1-physics-informed-neural-networks" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Scaling up
+        1. Physics-Informed Neural Networks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-automatic-differentiation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Automatic differentiation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-collocation-on-resampled-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Collocation on resampled points
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-loss-weighting-fixed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Loss weighting (fixed)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#56-adam-and-l-bfgs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5–6. Adam and L-BFGS
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-network-tanh-mlp-with-xavier-init" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Network: Tanh MLP with Xavier init
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-similarity-reduction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Similarity reduction
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#910-trihybrid-effective-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9–10. Trihybrid effective properties
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-darcyforchheimer-porous-medium" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Darcy–Forchheimer porous medium
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-ltne-two-temperature-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. LTNE (two-temperature) model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-mhd-effects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. MHD effects
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#14-thermal-radiation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14. Thermal radiation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#15-soret-effect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        15. Soret effect
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#16-independent-bvp-baseline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16. Independent BVP baseline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1718-explainability-shap-and-lime" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17–18. Explainability: SHAP and LIME
       
     </span>
   </a>
@@ -1516,41 +1821,266 @@
   
 
 
-<h1 id="parameter-sweeps">Parameter sweeps<a class="headerlink" href="#parameter-sweeps" title="Permanent link">&para;</a></h1>
-<p>Sweeps evaluate the <strong>fast BVP baseline</strong> (not full PINN retraining) over a
-cartesian grid — ideal for sensitivity mapping, XAI input tables, and
-pre-screening before expensive training.</p>
-<h2 id="ablation-config">Ablation config<a class="headerlink" href="#ablation-config" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><span class="nt">base_config</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configs/default_trihybrid_ltne.yaml</span>
-<span class="nt">sweep</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">M</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">2.0</span><span class="p p-Indicator">]</span>
-<span class="w">  </span><span class="nt">Rd</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">0.5</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1.0</span><span class="p p-Indicator">]</span>
-<span class="w">  </span><span class="nt">Fr</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">0.2</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">0.5</span><span class="p p-Indicator">]</span>
-<span class="w">  </span><span class="nt">Hs</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0.5</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">2.0</span><span class="p p-Indicator">]</span>
-<span class="nt">options</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">train</span>
-<span class="w">  </span><span class="nt">epochs_override</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5000</span><span class="w">   </span><span class="c1"># light retrains; null =&gt; base-config epochs</span>
-<span class="w">  </span><span class="nt">output_csv</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">data/processed/ablation_results.csv</span>
-<span class="w">  </span><span class="nt">parallel</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<h1 id="learn-the-methods">Learn the methods<a class="headerlink" href="#learn-the-methods" title="Permanent link">&para;</a></h1>
+<p>Every algorithmic and modelling technique used in this repository —
+what it is, where it lives in the code, and the paper it comes from.
+The <strong>Status</strong> column tells you honestly whether a technique is
+<strong>implemented here</strong> or is <strong>related work</strong> (useful context, not used).</p>
+<h2 id="at-a-glance">At a glance<a class="headerlink" href="#at-a-glance" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Technique</th>
+<th>Status here</th>
+<th>Key reference</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Physics-Informed Neural Networks</td>
+<td>✅ Used — the core solver</td>
+<td>Raissi, Perdikaris &amp; Karniadakis (2019)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Automatic differentiation</td>
+<td>✅ Used — PyTorch autograd to 3rd order</td>
+<td>Baydin et al. (2018)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Collocation residual minimization</td>
+<td>✅ Used — random η-points each epoch</td>
+<td>Raissi, Perdikaris &amp; Karniadakis (2019)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Fixed PDE/BC loss weighting</td>
+<td>✅ Used (<code>pde_weight</code>, <code>bc_weight</code>)</td>
+<td>— (cf. adaptive: Wang, Teng &amp; Perdikaris, 2021)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Adam optimizer</td>
+<td>✅ Used (default)</td>
+<td>Kingma &amp; Ba (2015)</td>
+</tr>
+<tr>
+<td>6</td>
+<td>L-BFGS optimizer</td>
+<td>✅ Used (option)</td>
+<td>Liu &amp; Nocedal (1989)</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Xavier init + Tanh MLP</td>
+<td>✅ Used (defaults)</td>
+<td>Glorot &amp; Bengio (2010)</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Similarity reduction of boundary layers</td>
+<td>✅ Used — ODEs in η</td>
+<td>Blasius (1908); Schlichting &amp; Gersten</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Brinkman viscosity model</td>
+<td>✅ Used — stepwise, per particle</td>
+<td>Brinkman (1952)</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Maxwell–Garnett conductivity model</td>
+<td>✅ Used — stepwise, per particle</td>
+<td>Maxwell (1873); Garnett (1904)</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Darcy–Forchheimer porous drag</td>
+<td>✅ Used — switchable terms</td>
+<td>Darcy (1856); Forchheimer (1901)</td>
+</tr>
+<tr>
+<td>12</td>
+<td>LTNE two-temperature model</td>
+<td>✅ Used — coupled θf/θs</td>
+<td>Nield &amp; Bejan</td>
+</tr>
+<tr>
+<td>13</td>
+<td>MHD Lorentz drag + Joule heating</td>
+<td>✅ Used — switchable terms</td>
+<td>Hartmann (1937)</td>
+</tr>
+<tr>
+<td>14</td>
+<td>Rosseland radiation approximation</td>
+<td>✅ Used — folded into conductivity</td>
+<td>Rosseland (1936)</td>
+</tr>
+<tr>
+<td>15</td>
+<td>Soret (thermal-diffusion) coupling</td>
+<td>✅ Used — switchable term</td>
+<td>Soret (1879)</td>
+</tr>
+<tr>
+<td>16</td>
+<td>BVP collocation baseline (<code>solve_bvp</code>)</td>
+<td>✅ Used — independent validation</td>
+<td>Kierzenka &amp; Shampine (2001)</td>
+</tr>
+<tr>
+<td>17</td>
+<td>SHAP global attributions</td>
+<td>✅ Used — parameter ranking</td>
+<td>Lundberg &amp; Lee (2017)</td>
+</tr>
+<tr>
+<td>18</td>
+<td>LIME local surrogates</td>
+<td>✅ Used — per-point explanations</td>
+<td>Ribeiro, Singh &amp; Guestrin (2016)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="1-physics-informed-neural-networks">1. Physics-Informed Neural Networks<a class="headerlink" href="#1-physics-informed-neural-networks" title="Permanent link">&para;</a></h2>
+<p>A neural network <span class="arithmatex">\(u_\theta(\eta)\)</span> approximates the solution fields, and
+training minimizes the <strong>PDE residual evaluated through the network</strong> plus
+boundary-condition residuals — no labelled data required:</p>
+<div class="highlight"><pre><span></span><code>L = w_pde · mean(R_PDE²) + w_bc · mean(R_BC²)
 </code></pre></div>
-<p>Run with <code>python main.py --config configs/ablation_study_config.yaml --mode sweep</code>.</p>
+<p>Implemented in <code>src/solvers/pinn_trainer.py</code> (<code>PINNTrainer</code>), residuals in
+<code>src/physics/governing_equations.py</code>. This is the formulation of:</p>
 <ul>
-<li><strong>Any</strong> <code>physics:</code> key can be swept — add <code>Ec</code>, <code>Sc</code>, <code>Kr</code>, <code>Sr</code>, <code>Q</code>,
-  <code>gamma_curv</code>, <code>slip</code>, <code>omega_ratio</code> freely (schema-validated on the base).</li>
-<li>Each row records the swept values plus QoIs: <code>mean_theta_f</code>, <code>mean_phi</code>,
-  <code>f_outer_fp</code> (failed points record <code>error</code> instead of QoIs).</li>
-<li>Cost scales multiplicatively with grid size: start coarse (2–3 values),
-  refine around interesting transitions.</li>
+<li>M. Raissi, P. Perdikaris, G.E. Karniadakis, <em>"Physics-informed neural
+  networks"</em>, J. Comput. Phys. 378 (2019). The paper that defined the
+  residual-loss PINN used here (parts I &amp; II).</li>
 </ul>
-<h2 id="scaling-up">Scaling up<a class="headerlink" href="#scaling-up" title="Permanent link">&para;</a></h2>
+<h2 id="2-automatic-differentiation">2. Automatic differentiation<a class="headerlink" href="#2-automatic-differentiation" title="Permanent link">&para;</a></h2>
+<p>All spatial derivatives (<span class="arithmatex">\(f'\)</span>, <span class="arithmatex">\(f''\)</span>, <span class="arithmatex">\(f'''\)</span>, <span class="arithmatex">\(\theta''\)</span>, …) are exact
+derivatives of the network computed by reverse-mode autodiff
+(<code>torch.autograd.grad</code>, nested), never finite differences. Implemented in
+<code>compute_derivatives()</code>.</p>
 <ul>
-<li>Keep <code>n_points: 150</code>-style coarse BVP resolution for sweeps (as in
-  <code>cmd_sweep</code>); use full resolution for final baselines.</li>
-<li><code>parallel: false</code> is the current default; flip to a process pool only via
-  custom code (each BVP solve is independent — embarrassingly parallel).</li>
-<li>Sweep CSVs double as training data for surrogate models feeding SHAP/LIME
-  (see <a href="../explainability/">Explainability</a>).</li>
+<li>A.G. Baydin et al., <em>"Automatic differentiation in machine learning:
+  a survey"</em>, J. Mach. Learn. Res. 18 (2018). Background on the technique
+  PyTorch's autograd implements.</li>
 </ul>
+<h2 id="3-collocation-on-resampled-points">3. Collocation on resampled points<a class="headerlink" href="#3-collocation-on-resampled-points" title="Permanent link">&para;</a></h2>
+<p>Each epoch draws <code>n_collocation</code> fresh uniform points in <span class="arithmatex">\((0, \eta_0)\)</span>
+(<code>_sample_collocation()</code>), so the PDE is enforced over the whole domain
+rather than a fixed mesh. Related work also uses Latin-hypercube or
+adaptive sampling; uniform resampling is the Raissi et al. default and is
+what we implement.</p>
+<h2 id="4-loss-weighting-fixed">4. Loss weighting (fixed)<a class="headerlink" href="#4-loss-weighting-fixed" title="Permanent link">&para;</a></h2>
+<p>PDE and BC terms compete during optimization, so the loss carries static
+weights from YAML (<code>pde_weight: 1.0</code>, <code>bc_weight: 10.0</code> — walls need
+upweighting or they drift). Adaptive schemes (NTK weighting, learning-rate
+annealing) exist but are <strong>not</strong> implemented; if training stalls, tune the
+static weights per <a href="../training/#tuning-guide">Training</a>:</p>
+<ul>
+<li>S. Wang, Y. Teng, P. Perdikaris, <em>"Understanding and mitigating gradient
+  flow pathologies in physics-informed neural networks"</em>, SIAM J. Sci.
+  Comput. (2021). Diagnoses why the weighting matters.</li>
+</ul>
+<h2 id="56-adam-and-l-bfgs">5–6. Adam and L-BFGS<a class="headerlink" href="#56-adam-and-l-bfgs" title="Permanent link">&para;</a></h2>
+<p><code>optimizer: adam</code> (default, lr <span class="arithmatex">\(10^{-3}\)</span>) with gradient clipping; <code>lbfgs</code>
+(20 inner iterations) as a strong finisher. Scheduler: optional StepLR.</p>
+<ul>
+<li>D.P. Kingma, J. Ba, <em>"Adam: A method for stochastic optimization"</em>,
+  ICLR (2015).</li>
+<li>D.C. Liu, J. Nocedal, <em>"On the limited memory BFGS method for large
+  scale optimization"</em>, Math. Programming (1989).</li>
+</ul>
+<h2 id="7-network-tanh-mlp-with-xavier-init">7. Network: Tanh MLP with Xavier init<a class="headerlink" href="#7-network-tanh-mlp-with-xavier-init" title="Permanent link">&para;</a></h2>
+<p>Default 3 × 128 Tanh, Xavier-normal weights — smooth activations matter
+because the loss needs up to 3rd derivatives (ReLU would give zero
+higher derivatives). Fully config-driven in <code>src/models/pinn_architecture.py</code>.</p>
+<ul>
+<li>X. Glorot, Y. Bengio, <em>"Understanding the difficulty of training deep
+  feedforward neural networks"</em>, AISTATS (2010).</li>
+</ul>
+<h2 id="8-similarity-reduction">8. Similarity reduction<a class="headerlink" href="#8-similarity-reduction" title="Permanent link">&para;</a></h2>
+<p>The cylindrical Navier–Stokes/energy system is reduced by similarity
+variables to ODEs in <span class="arithmatex">\(\eta\)</span> with unknowns <span class="arithmatex">\(f, \theta_f, \theta_s, \phi\)</span>.
+This classical boundary-layer reduction is what makes a 1-D PINN
+sufficient. See <a href="../equations/">Equation catalog</a> for the exact terms.</p>
+<ul>
+<li>H. Blasius, <em>"Grenzschichten in Flüssigkeiten mit kleiner Reibung"</em>,
+  Z. Math. Phys. (1908). The original similarity solution.</li>
+<li>H. Schlichting, K. Gersten, <em>Boundary-Layer Theory</em> (textbook).</li>
+</ul>
+<h2 id="910-trihybrid-effective-properties">9–10. Trihybrid effective properties<a class="headerlink" href="#910-trihybrid-effective-properties" title="Permanent link">&para;</a></h2>
+<p>Per particle, applied stepwise in <code>src/core/fluid_properties.py</code>:</p>
+<ul>
+<li><strong>Viscosity (Brinkman):</strong> <span class="arithmatex">\(\mu \leftarrow \mu/(1-\varphi_i)^{2.5}\)</span> —
+  H.C. Brinkman, <em>"The viscosity of concentrated suspensions and
+  solutions"</em>, J. Chem. Phys. (1952).</li>
+<li><strong>Conductivity (Maxwell–Garnett):</strong> Maxwell's effective-medium formula
+  applied per species — J.C. Maxwell, <em>A Treatise on Electricity and
+  Magnetism</em> (1873); J.C.M. Garnett, <em>"Colours in metal glasses…"</em>,
+  Phil. Trans. R. Soc. (1904).</li>
+<li>Density/heat capacity use linear mixtures; the ratios form the A1–A7
+  coefficients (see <a href="../parameters/">Parameter guide</a>).</li>
+</ul>
+<h2 id="11-darcyforchheimer-porous-medium">11. Darcy–Forchheimer porous medium<a class="headerlink" href="#11-darcyforchheimer-porous-medium" title="Permanent link">&para;</a></h2>
+<p>Linear Darcy drag <span class="arithmatex">\(-K_p f'\)</span> plus quadratic Forchheimer inertia
+<span class="arithmatex">\(-F_r(f')^2\)</span>, each a YAML-switchable momentum term:</p>
+<ul>
+<li>H. Darcy, <em>Les fontaines publiques de la ville de Dijon</em> (1856).</li>
+<li>P. Forchheimer, <em>"Wasserbewegung durch Boden"</em>, Z. Ver. Deutsch. Ing. (1901).</li>
+</ul>
+<h2 id="12-ltne-two-temperature-model">12. LTNE (two-temperature) model<a class="headerlink" href="#12-ltne-two-temperature-model" title="Permanent link">&para;</a></h2>
+<p>Fluid and solid phases carry separate temperatures <span class="arithmatex">\(\theta_f, \theta_s\)</span>
+coupled by interphase coefficients <span class="arithmatex">\(H_s, H_{sg}\)</span> (large values recover
+thermal equilibrium). Implemented as two coupled energy residuals.</p>
+<ul>
+<li>D.A. Nield, A. Bejan, <em>Convection in Porous Media</em> (Springer).
+  The standard reference for porous-medium convection and LTNE modelling.</li>
+</ul>
+<h2 id="13-mhd-effects">13. MHD effects<a class="headerlink" href="#13-mhd-effects" title="Permanent link">&para;</a></h2>
+<p>Transverse magnetic field: Lorentz drag <span class="arithmatex">\(-A_2 M f'\)</span> in momentum plus
+Joule heating <span class="arithmatex">\(E_c M \sigma_r (f')^2\)</span> in fluid energy.</p>
+<ul>
+<li>J. Hartmann, <em>"Hg-dynamics I: Theory of the laminar flow of an
+  electrically conductive liquid…"</em> (1937).</li>
+</ul>
+<h2 id="14-thermal-radiation">14. Thermal radiation<a class="headerlink" href="#14-thermal-radiation" title="Permanent link">&para;</a></h2>
+<p>Rosseland diffusion approximation folded into the effective conductivity
+<span class="arithmatex">\(k_{\text{eff}} = k_r + R_d\)</span>:</p>
+<ul>
+<li>S. Rosseland, <em>Theoretical Astrophysics</em> (1936).</li>
+</ul>
+<h2 id="15-soret-effect">15. Soret effect<a class="headerlink" href="#15-soret-effect" title="Permanent link">&para;</a></h2>
+<p>Thermal-diffusion coupling <span class="arithmatex">\(S_r\,\theta_f''\)</span> in the concentration
+equation (switchable <code>soret</code> term):</p>
+<ul>
+<li>C. Soret, <em>"Sur l'état d'équilibre…"</em>, Arch. Sci. Phys. Nat. (1879).</li>
+</ul>
+<h2 id="16-independent-bvp-baseline">16. Independent BVP baseline<a class="headerlink" href="#16-independent-bvp-baseline" title="Permanent link">&para;</a></h2>
+<p><code>scipy.integrate.solve_bvp</code> — collocation on an adaptive mesh — solves the
+<em>same</em> term-switched equations as a 9-state first-order system, giving a
+solver-independent reference for MSE/RMSE/R² validation:</p>
+<ul>
+<li>J. Kierzenka, L.F. Shampine, <em>"A BVP solver based on residual control
+  and the MATLAB PSE"</em>, ACM Trans. Math. Softw. (2001). The algorithm
+  behind <code>solve_bvp</code>.</li>
+</ul>
+<h2 id="1718-explainability-shap-and-lime">17–18. Explainability: SHAP and LIME<a class="headerlink" href="#1718-explainability-shap-and-lime" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>SHAP</strong> (global): which parameters matter overall —
+  S.M. Lundberg, S.-I. Lee, <em>"A unified approach to interpreting model
+  predictions"</em>, NeurIPS (2017).</li>
+<li><strong>LIME</strong> (local): why this prediction at this point, via interpretable
+  surrogates — M.T. Ribeiro, S. Singh, C. Guestrin, <em>"'Why should I trust
+  you?': Explaining the predictions of any classifier"</em>, KDD (2016).</li>
+</ul>
+<p>See <a href="../explainability/">Explainability</a> for how both are applied here
+(spatial + parameter modes, fallbacks when the packages are absent).</p>
 
 
 

@@ -1,0 +1,35 @@
+/* Custom footer + readability polish for the PINN docs site. */
+
+.md-footer-meta {
+  background-color: #101828;
+}
+
+.md-footer-meta .md-footer-copyright {
+  color: #cbd5e1;
+  max-width: none;
+}
+
+.md-footer-meta a {
+  color: #a5b4fc;
+}
+
+.md-footer-meta a:hover {
+  color: #e0e7ff;
+  text-decoration: underline;
+}
+
+.md-social__link svg {
+  fill: #cbd5e1;
+}
+
+.md-social__link:hover svg {
+  fill: #ffffff;
+}
+
+/* Hero buttons on the home page. */
+.md-typeset .md-button {
+  border-radius: 6px;
+  font-weight: 600;
+  margin-right: 0.4rem;
+  margin-bottom: 0.4rem;
+}
