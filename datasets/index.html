@@ -13,10 +13,10 @@
       
       
       
-        <link rel="prev" href="../training/">
+        <link rel="prev" href="../extending/">
       
       
-        <link rel="next" href="../explainability/">
+        <link rel="next" href="../training/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Validation - Trihybrid LTNE PINN</title>
+        <title>Datasets & mock data - Trihybrid LTNE PINN</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#validation" class="md-skip">
+        <a href="#datasets-mock-data" class="md-skip">
           Skip to content
         </a>
       
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Validation
+              Datasets & mock data
             
           </span>
         </div>
@@ -812,10 +812,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../datasets/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Datasets & mock data
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -831,6 +858,114 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-big-picture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The big picture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-mock-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why mock data?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-layout-and-naming" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File layout and naming
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Generation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleaning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cleaning
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#consuming-the-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Consuming the data
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reproducing-everything" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reproducing everything
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#current-grid-status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current grid status
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -868,37 +1003,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Validation
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../validation/" class="md-nav__link">
         
   
   
@@ -914,70 +1022,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#baseline-method" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Baseline method
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#metrics" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Metrics
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#figures-dataprocessedfigures" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Figures (data/processed/figures/)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#interpreting-failures" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Interpreting failures
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1525,10 +1569,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#baseline-method" class="md-nav__link">
+  <a href="#the-big-picture" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Baseline method
+        The big picture
       
     </span>
   </a>
@@ -1536,10 +1580,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#metrics" class="md-nav__link">
+  <a href="#why-mock-data" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Metrics
+        Why mock data?
       
     </span>
   </a>
@@ -1547,10 +1591,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#figures-dataprocessedfigures" class="md-nav__link">
+  <a href="#file-layout-and-naming" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Figures (data/processed/figures/)
+        File layout and naming
       
     </span>
   </a>
@@ -1558,10 +1602,54 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#interpreting-failures" class="md-nav__link">
+  <a href="#generation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Interpreting failures
+        Generation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleaning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cleaning
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#consuming-the-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Consuming the data
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reproducing-everything" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reproducing everything
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#current-grid-status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current grid status
       
     </span>
   </a>
@@ -1588,57 +1676,182 @@
   
 
 
-<h1 id="validation">Validation<a class="headerlink" href="#validation" title="Permanent link">&para;</a></h1>
-<p>PINN predictions are checked against an independent mesh-based solver on the
-<strong>same</strong> term-switched equations — validation is meaningful only because of
-that parity (<a href="../equations/">Equation catalog</a>).</p>
-<h2 id="baseline-method">Baseline method<a class="headerlink" href="#baseline-method" title="Permanent link">&para;</a></h2>
-<p><code>src/solvers/numerical_rk45.py::solve_bvp_baseline</code> rewrites the similarity
-ODEs as a 9-state first-order system
-<code>y = [f, f′, f″, θf, θf′, θs, θs′, φ, φ′]</code> and solves it with
-<code>scipy.integrate.solve_bvp</code> (collocation, RK-based) on an adaptive mesh
-(<code>bvp_mesh</code>, <code>tol</code>, <code>max_nodes</code> from config). Dirichlet/Robin/slip variants
-are mirrored. Output: <code>data/raw/baseline.npz</code>.</p>
-<h2 id="metrics">Metrics<a class="headerlink" href="#metrics" title="Permanent link">&para;</a></h2>
-<p><code>evaluate_predictions()</code> interpolates the PINN onto the baseline η-grid and
-scores each field:</p>
-<ul>
-<li><strong>MSE</strong> = mean((true − pred)²), <strong>RMSE</strong> = √MSE (same units as the field)</li>
-<li><strong>R²</strong> = 1 − SS_res/SS_tot per field, plus a <code>_mean</code> aggregate</li>
-<li>Saved to <code>data/processed/metrics.json</code>; the run passes iff mean R² ≥ 0.95
-  (<code>meets_accuracy_gate</code>), printed as <code>PASS</code>/<code>FAIL</code></li>
-</ul>
-<h2 id="figures-dataprocessedfigures">Figures (<code>data/processed/figures/</code>)<a class="headerlink" href="#figures-dataprocessedfigures" title="Permanent link">&para;</a></h2>
+<h1 id="datasets-mock-data">Datasets &amp; mock data<a class="headerlink" href="#datasets-mock-data" title="Permanent link">&para;</a></h1>
+<p>This page explains <strong>what data exists in this project, where it lives, and
+how it flows</strong> from equations to trained models. If you only remember one
+thing: <strong>every dataset here is generated from the governing equations —
+there are no external data files to download.</strong></p>
+<h2 id="the-big-picture">The big picture<a class="headerlink" href="#the-big-picture" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart LR
+    EQ[Equations\nYAML + physics] --&gt; GEN[Generate\nBVP solver, 1000-pt grid]
+    GEN --&gt; RAW[data/raw\nmock_*.npz]
+    RAW --&gt; CLEAN[Clean\ndeterministic checks]
+    CLEAN --&gt; PROC[data/processed\nmock_*.npz + reports]
+    PROC --&gt; TRAIN[Train\nPINN per combo]
+    TRAIN --&gt; CKPT[checkpoints/mock1000\none model per combo]
+    CKPT --&gt; VAL[Validate\nPINN vs cleaned data]
+    PROC --&gt; VAL
+    VAL --&gt; SUM[data/processed\nmock_sweep_summary.csv]</code></pre>
+<p>Two dataset kinds exist:</p>
 <table>
 <thead>
 <tr>
-<th>Figure</th>
-<th>Reads as</th>
+<th>Kind</th>
+<th>Source</th>
+<th>Points</th>
+<th>Purpose</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>loss_curve.png</code></td>
-<td>Total/PDE/BC loss (log scale); PDE and BC should fall together</td>
+<td><strong>Baseline</strong> (<code>baseline.npz</code>)</td>
+<td>BVP solve of the flagship config</td>
+<td>400 (configurable)</td>
+<td>Quick reference for <code>validate</code>/<code>plot</code></td>
 </tr>
 <tr>
-<td><code>profiles.png</code></td>
-<td>PINN (dashed) vs BVP (solid) for f, θf, θs, φ</td>
-</tr>
-<tr>
-<td><code>regression.png</code></td>
-<td>Parity scatter per field with R²; points should hug the diagonal</td>
+<td><strong>Mock grid</strong> (<code>mock_*.npz</code>)</td>
+<td>BVP solve per parameter combo</td>
+<td>1000 per combo</td>
+<td>Reference truth for training + validation across the parameter space</td>
 </tr>
 </tbody>
 </table>
-<h2 id="interpreting-failures">Interpreting failures<a class="headerlink" href="#interpreting-failures" title="Permanent link">&para;</a></h2>
+<h2 id="why-mock-data">Why mock data?<a class="headerlink" href="#why-mock-data" title="Permanent link">&para;</a></h2>
+<p>A PINN needs no labelled data to train (it learns from PDE residuals), but
+you still need <strong>reference truth</strong> to know whether it learned correctly.
+Instead of experiments, we solve the <em>same</em> equations with an independent
+mesh-based solver (<code>solve_bvp</code>) on a dense grid. That gives 1000-point
+reference profiles per parameter combination — the "mock data".</p>
+<h2 id="file-layout-and-naming">File layout and naming<a class="headerlink" href="#file-layout-and-naming" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>data/raw/        mock_&lt;params&gt;.npz     # straight from the solver (immutable)
+data/processed/  mock_&lt;params&gt;.npz     # cleaned copy used for validation
+data/processed/  mock_&lt;params&gt;_cleaning_report.json
+data/processed/  metrics_mock_&lt;params&gt;.json
+data/processed/  mock_sweep_summary.csv
+checkpoints/mock1000/mock_&lt;params&gt;/    # one trained model per combo
+</code></pre></div>
+<p>Names encode the combo, e.g. <code>mock_Fr0p2_Hs1p0_M1p0_Rd0p5</code> means
+Fr=0.2, Hs=1.0, M=1.0, Rd=0.5 (<code>p</code> = decimal point, keys sorted).</p>
+<p>Each <code>.npz</code> holds six arrays of equal length:</p>
+<table>
+<thead>
+<tr>
+<th>Array</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>eta</code></td>
+<td>Similarity coordinate grid, strictly increasing</td>
+</tr>
+<tr>
+<td><code>f</code></td>
+<td>Velocity (stream function)</td>
+</tr>
+<tr>
+<td><code>fp</code></td>
+<td>Velocity gradient <span class="arithmatex">\(f'\)</span> (solver state, for QoIs)</td>
+</tr>
+<tr>
+<td><code>theta_f</code> / <code>theta_s</code></td>
+<td>Fluid / solid temperatures (LTNE pair)</td>
+</tr>
+<tr>
+<td><code>phi</code></td>
+<td>Concentration</td>
+</tr>
+</tbody>
+</table>
+<h2 id="generation">Generation<a class="headerlink" href="#generation" title="Permanent link">&para;</a></h2>
+<p><code>src/data/mock_data.py::generate_mock_data</code> solves the configured BVP on a
+uniform 1000-point grid (<code>mock.n_points</code>). Optional seeded Gaussian <code>noise</code>
+mimics measurement data (default <code>0.0</code> = clean reference). Generation is
+deterministic given config + combo + seed.</p>
+<p>Stiff corners (e.g. strong LTNE coupling at Hs=2.0) automatically retry once
+with a relaxed mesh/tolerance — recorded as <code>solver_relaxed: true</code> in the
+cleaning report, and carried into the summary CSV for transparency.</p>
+<h2 id="cleaning">Cleaning<a class="headerlink" href="#cleaning" title="Permanent link">&para;</a></h2>
+<p><code>src/data/cleaning.py::clean_mock</code> applies deterministic, logged steps:</p>
+<ol>
+<li>Drop rows with any non-finite value in required fields</li>
+<li>Sort by η; dedupe η within tolerance</li>
+<li>Optional physical clipping (<code>cleaning.clip</code>) and smoothing
+   (<code>cleaning.smooth_window</code>, off by default)</li>
+<li>Schema check: required keys present, lengths match, η strictly increasing</li>
+</ol>
+<p>Every action is counted in <code>&lt;stem&gt;_cleaning_report.json</code>
+(<code>n_in</code>, <code>n_out</code>, <code>n_dropped_nonfinite</code>, <code>n_deduped</code>, <code>n_clipped</code>,
+warnings). Cleaning never touches <code>data/raw</code> — raw files are immutable,
+clean copies land in <code>data/processed</code>.</p>
+<h2 id="consuming-the-data">Consuming the data<a class="headerlink" href="#consuming-the-data" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Consumer</th>
+<th>Reads</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>validate</code> / <code>plot</code></td>
+<td><code>data/raw/baseline.npz</code> (or recompute)</td>
+<td>Single-config reference</td>
+</tr>
+<tr>
+<td><code>mock</code> pipeline</td>
+<td><code>data/processed/mock_*.npz</code></td>
+<td>Per-combo reference truth</td>
+</tr>
+<tr>
+<td>SHAP / LIME sweeps</td>
+<td>Sweep tables (BVP QoIs, not stored)</td>
+<td>See <a href="../explainability/">Explainability</a></td>
+</tr>
+</tbody>
+</table>
+<p>The PINN itself never trains on the mock fields — loss is purely PDE + BC
+residuals. Mock data is the <strong>answer key</strong>, not the textbook.</p>
+<h2 id="reproducing-everything">Reproducing everything<a class="headerlink" href="#reproducing-everything" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="c1"># Full pipeline for combos 14–21 (resumable slices; skips existing artefacts)</span>
+python<span class="w"> </span>main.py<span class="w"> </span>--config<span class="w"> </span>configs/mock_train_1000.yaml<span class="w"> </span>--mode<span class="w"> </span>mock<span class="w"> </span>--start<span class="w"> </span><span class="m">14</span><span class="w"> </span>--end<span class="w"> </span><span class="m">21</span>
+<span class="c1"># Regenerate everything from scratch (data + models)</span>
+python<span class="w"> </span>main.py<span class="w"> </span>--config<span class="w"> </span>configs/mock_train_1000.yaml<span class="w"> </span>--mode<span class="w"> </span>mock<span class="w"> </span>--force
+</code></pre></div>
+<p>Data-only regeneration (no training) is a few lines of Python:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">src.core.fluid_properties</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_coefficients</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">src.data.cleaning</span><span class="w"> </span><span class="kn">import</span> <span class="n">clean_mock</span><span class="p">,</span> <span class="n">save_clean_mock</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">src.data.mock_data</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">combo_name</span><span class="p">,</span> <span class="n">generate_mock_data</span><span class="p">,</span> <span class="n">override_physics</span><span class="p">,</span> <span class="n">param_combos</span><span class="p">,</span> <span class="n">save_mock</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">cfg</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;configs/mock_train_1000.yaml&quot;</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">combo</span> <span class="ow">in</span> <span class="n">param_combos</span><span class="p">(</span><span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;param_grid&quot;</span><span class="p">]):</span>
+    <span class="n">cfg_c</span> <span class="o">=</span> <span class="n">override_physics</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">combo</span><span class="p">)</span>
+    <span class="n">raw</span> <span class="o">=</span> <span class="n">generate_mock_data</span><span class="p">(</span><span class="n">cfg_c</span><span class="p">,</span> <span class="n">compute_coefficients</span><span class="p">(</span><span class="n">cfg_c</span><span class="p">),</span> <span class="n">n_points</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+    <span class="n">stem</span> <span class="o">=</span> <span class="n">combo_name</span><span class="p">(</span><span class="n">combo</span><span class="p">)</span>
+    <span class="n">save_mock</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="s2">&quot;data/raw&quot;</span><span class="p">,</span> <span class="n">stem</span><span class="p">)</span>
+    <span class="n">clean</span><span class="p">,</span> <span class="n">report</span> <span class="o">=</span> <span class="n">clean_mock</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
+    <span class="n">save_clean_mock</span><span class="p">(</span><span class="n">clean</span><span class="p">,</span> <span class="n">report</span><span class="p">,</span> <span class="s2">&quot;data/processed&quot;</span><span class="p">,</span> <span class="n">stem</span><span class="p">)</span>
+</code></pre></div>
+<blockquote>
+<p><strong>Note:</strong> generated data and trained models are git-ignored by design
+(<code>data/raw/*.npz</code>, <code>data/processed/*.npz</code>, <code>checkpoints/</code>). The commands
+above recreate them anywhere. Only source, configs, docs and tests are
+committed.</p>
+</blockquote>
+<h2 id="current-grid-status">Current grid status<a class="headerlink" href="#current-grid-status" title="Permanent link">&para;</a></h2>
+<p>The default grid (<code>configs/mock_train_1000.yaml → param_grid</code>) is
+M × Rd × Fr × Hs = 3 × 3 × 3 × 3 = <strong>81 combos</strong>:</p>
 <ul>
-<li><strong>One field poor, rest fine</strong>: usually a coefficient-scale or term-switch
-  issue — recheck the term's catalog row and the parameter's range.</li>
-<li><strong>All fields poor</strong>: under-training (raise epochs), LR too high, or wrong
-  <code>eta0</code> (profiles clipped at the outer wall).</li>
-<li><strong><code>solve_bvp</code> fails</strong>: degenerate term combination (see catalog warnings),
-  mesh too coarse (<code>bvp_mesh</code>), or tolerance too tight — relax stepwise.</li>
+<li>81/81 BVP datasets converge and pass physicality checks (fields in
+  [0, 1], monotone decay, visible LTNE splitting θs &gt; θf downstream)</li>
+<li>Per-combo PINN training (5000 epochs) runs resumably via
+  <code>--start/--end</code> slices; results accumulate in <code>mock_sweep_summary.csv</code>
+  with per-field R² and a PASS/FAIL gate (mean R² ≥ 0.95)</li>
 </ul>
 
 
