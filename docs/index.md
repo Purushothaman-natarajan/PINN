@@ -34,6 +34,8 @@ retune training — all without editing Python. See
   then [Parameter guide](parameters.md)
 - **Reuse with new equations?** → [Equation catalog](equations.md),
   then the [extension recipes](extending.md)
+- **Understand the data?** → [Datasets & mock data](datasets.md)
+  (generate → clean → train → validate lifecycle)
 - **Add a nanoparticle / fluid?** → [Extending: new material](extending.md#add-a-nanoparticle-or-base-fluid)
 - **Tune or debug training?** → [Training](training.md) + [FAQ](faq.md)
 - **Code API?** → [API reference](api/index.md)

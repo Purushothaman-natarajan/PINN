@@ -151,4 +151,5 @@ Full site: **[purushothaman-natarajan.github.io/PINN](https://purushothaman-nata
 | Change parameters | [Configuration reference](docs/configuration.md), [Parameter guide](docs/parameters.md) |
 | Change equations | [Equation catalog](docs/equations.md), [Extending](docs/extending.md) |
 | Tune or debug training | [Training](docs/training.md), [FAQ](docs/faq.md) |
+| Understand the data (generate → clean → train) | [Datasets & mock data](docs/datasets.md) |
 | Call functions directly | [API reference](docs/api/index.md) |

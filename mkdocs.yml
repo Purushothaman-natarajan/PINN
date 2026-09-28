@@ -99,6 +99,7 @@ nav:
       - Parameter guide: parameters.md
   - Guides:
       - Extending the repo: extending.md
+      - Datasets & mock data: datasets.md
       - Training: training.md
       - Validation: validation.md
       - Explainability (SHAP + LIME): explainability.md
