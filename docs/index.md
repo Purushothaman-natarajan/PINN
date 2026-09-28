@@ -6,6 +6,10 @@ nanofluid in a coaxial cylinder**, with a **Darcy–Forchheimer porous
 medium**, a **local thermal non-equilibrium (LTNE)** model and a **transverse
 magnetic field**.
 
+[Get started](quickstart.md){ .md-button .md-button--primary }
+[Learn the methods](learn.md){ .md-button }
+[GitHub](https://github.com/Purushothaman-natarajan/PINN){ .md-button }
+
 The headline idea: **the equations live in the YAML config, not in the
 code.** Toggle physical terms, swap nanoparticles, resize the network or
 retune training — all without editing Python. See

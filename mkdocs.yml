@@ -6,6 +6,11 @@ site_description: >-
 site_author: Purushothaman Natarajan
 repo_url: https://github.com/Purushothaman-natarajan/PINN
 repo_name: PINN
+copyright: >-
+  Copyright &copy; 2026
+  <a href="https://purushothaman-natarajan.github.io/" target="_blank" rel="noopener">Purushothaman Natarajan</a>
+  &middot; Open source under the
+  <a href="https://github.com/Purushothaman-natarajan/PINN/blob/master/LICENSE" target="_blank" rel="noopener">MIT License</a>
 
 theme:
   name: material
@@ -57,6 +62,19 @@ extra_javascript:
 extra:
   mermaid: |
     mermaid.initialize({ startOnLoad: true })
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/Purushothaman-natarajan/PINN
+      name: GitHub repository
+    - icon: fontawesome/solid/user
+      link: https://purushothaman-natarajan.github.io/
+      name: Developer — Purushothaman Natarajan
+    - icon: fontawesome/solid/scale-balanced
+      link: https://github.com/Purushothaman-natarajan/PINN/blob/master/LICENSE
+      name: MIT License
+
+extra_css:
+  - stylesheets/extra.css
 
 plugins:
   - search
@@ -71,6 +89,7 @@ plugins:
 
 nav:
   - Home: index.md
+  - Learn the methods: learn.md
   - Getting started:
       - Quickstart: quickstart.md
       - Architecture: architecture.md

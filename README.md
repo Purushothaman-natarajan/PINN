@@ -1,77 +1,154 @@
-# Trihybrid Nanofluid LTNE PINN (PyTorch)
+# PINN — Trihybrid Nanofluid Flow, Heat & Mass Transfer
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](pyproject.toml)
 [![PyTorch 2.0+](https://img.shields.io/badge/torch-2.0%2B-ee4c2c)](requirements.txt)
-[![Tests](https://img.shields.io/badge/pytest-passing-green)](tests/)
+[![Tests passing](https://img.shields.io/badge/pytest-19_passing-green)](tests/)
+[![Docs](https://img.shields.io/badge/docs-mkdocs-material-blue)](https://purushothaman-natarajan.github.io/PINN/)
 
-Physics-informed neural network for **trihybrid nanofluid flow in a coaxial
-cylinder** with Darcy–Forchheimer porous medium, **local thermal
-non-equilibrium (LTNE)**, and a transverse magnetic field.
+A **Physics-Informed Neural Network (PyTorch)** that simulates fluid flow,
+heat transfer and mass transfer for a **trihybrid nanofluid in a coaxial
+cylinder** — with a Darcy–Forchheimer porous medium, local thermal
+non-equilibrium (LTNE) and a transverse magnetic field.
 
-> **The equations live in the YAML config, not in the code.** Toggle
-> physical terms, swap nanoparticles, resize the network, retune training —
-> all without editing Python. Start with the
-> [documentation](https://Purushothaman-natarajan.github.io/PINN/)
-> (or `docs/` locally via `mkdocs serve`).
+**The core idea:** the physics lives in a YAML config file, not in code.
+Change parameters, switch equation terms, swap nanoparticles, resize the
+network — no Python edits needed.
 
-- **Framework:** PyTorch (autograd up to 3rd order), Adam/LBFGS
-- **Outputs:** `f` (velocity), `theta_f` (fluid temp), `theta_s` (solid temp),
-  `phi` (concentration)
-- **Baseline:** `scipy.integrate.solve_bvp` mirror of the same equations
-- **Metrics:** MSE / RMSE / R² with `R² > 0.95` quality gate
-- **Explainability:** SHAP (global) + LIME (local) sensitivity analysis
+## What it predicts
+
+From the similarity coordinate `η ∈ [0, η₀]`, the network outputs four fields:
+
+| Output | Meaning |
+|---|---|
+| `f` | Velocity (stream function) |
+| `θf` | Fluid temperature (LTNE fluid phase) |
+| `θs` | Solid temperature (LTNE solid phase) |
+| `φ` | Nanoparticle concentration |
+
+Predictions are validated against an independent `solve_bvp` numerical
+solver on the *same* equations (target: mean R² > 0.95), and explained with
+SHAP (global) + LIME (local) analysis.
 
 ## Quickstart
 
 ```bash
+git clone https://github.com/Purushothaman-natarajan/PINN.git
+cd PINN
+python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-python main.py --config configs/default_trihybrid_ltne.yaml --mode baseline  # seconds
-python main.py --config configs/default_trihybrid_ltne.yaml --mode all       # full pipeline
-pytest -q
 ```
 
+**1. Numerical baseline first** (seconds — proves your setup works):
+
+```bash
+python main.py --config configs/default_trihybrid_ltne.yaml --mode baseline
+```
+
+**2. Mock-data pipeline** (generate 1000-point reference data → clean →
+train → validate, over a parameter grid):
+
+```bash
+python main.py --config configs/mock_train_1000.yaml --mode mock
+```
+
+Flags: `--start N --end M` trains only combos N–M (resumable),
+`--force` regenerates existing artefacts.
+
+**3. Individual stages**, all driven by `--config`:
+
+```bash
+python main.py --config configs/default_trihybrid_ltne.yaml --mode train     # train PINN
+python main.py --config configs/default_trihybrid_ltne.yaml --mode validate  # MSE/RMSE/R² + plots
+python main.py --config configs/default_trihybrid_ltne.yaml --mode explain   # SHAP + LIME
+python main.py --config configs/ablation_study_config.yaml --mode sweep      # parameter grid
+pytest -q                                                                     # test suite
+```
+
+| Mode | Does | Produces |
+|---|---|---|
+| `train` | Trains the PINN (Adam/LBFGS, PDE+BC loss) | `checkpoints/` |
+| `baseline` | Reference solution via `solve_bvp` | `data/raw/` |
+| `mock` | Generate → clean → train → validate per parameter combo | `data/`, `checkpoints/mock1000/`, summary CSV |
+| `validate` | PINN vs reference: metrics + figures | `data/processed/` |
+| `shap` / `lime` / `explain` | Parameter + spatial sensitivity analysis | `data/processed/shap\|lime/` |
+| `sweep` | Fast BVP-only ablation grid | `data/processed/*.csv` |
+| `plot` | Re-render figures from saved artefacts | `data/processed/figures/` |
+| `all` | `train` → `baseline` → `validate` | everything above |
+
+## How configuration works
+
+Everything — physics, equations, network, training — comes from YAML
+(validated against [`configs/schema.json`](configs/schema.json) on load):
+
+```yaml
+physics:
+  M: 1.0    # magnetic parameter → Lorentz drag + Joule heating
+  Rd: 0.5   # thermal radiation → extra conductivity
+equations:
+  momentum_terms: [viscous, inertia, magnetic, darcy, forchheimer, curvature]
+model:
+  hidden_layers: [128, 128, 128]   # default 3×128, Tanh
+  activation: tanh
+training:
+  epochs: 5000
+```
+
+Toggling a term name changes the PDE solved by **both** the PINN and the
+baseline solver, so validation always compares like with like.
+
+## Project layout
+
+```text
+configs/
+  default_trihybrid_ltne.yaml   # flagship physics + model + training setup
+  mock_train_1000.yaml          # 1000-pt mock-data grid (M × Rd × Fr × Hs = 81 combos)
+  ablation_study_config.yaml    # fast BVP-only sweep definition
+  schema.json                   # config schema, enforced automatically
+src/
+  core/     # config loading/validation, trihybrid fluid properties (A1–A7)
+  data/     # mock-data generation (BVP grids) + deterministic cleaning
+  models/   # config-driven PyTorch MLP: η → (f, θf, θs, φ)
+  physics/  # term-switched PDE residuals (autograd ≤ 3rd order) + wall BCs
+  solvers/  # PINN trainer (weighted PDE+BC loss) + solve_bvp baseline
+  analysis/ # validation metrics, SHAP, LIME, figures
+tests/      # physics, models, data pipeline, explainability
+docs/       # full documentation site (MkDocs Material)
+main.py     # CLI entry point
+```
+
+> **Note:** generated data (`data/raw`, `data/processed`) and trained
+> models (`checkpoints/`) are deliberately **not** committed — they are
+> reproducible with the commands above. Only source, configs, docs and tests
+> live in git.
+
+## Results so far
+
+- Pilot combo (M=1, Rd=0.5, Fr=0.2, Hs=1, 5000 epochs CPU): **mean R² = 0.9997** ✅
+- 81-combo mock grid: all BVP datasets converge and pass physicality checks
+  (fields in [0, 1], monotone decay, visible LTNE splitting)
+- Full 81-model training sweep in progress — per-combo metrics land in
+  `data/processed/mock_sweep_summary.csv`
+
+## License and author
+
+Open source under the **[MIT License](LICENSE)** — free to use, modify and
+distribute with attribution.
+
+Developed by **[Purushothaman Natarajan](https://purushothaman-natarajan.github.io/)**.
+Bug reports and ideas are welcome via
+[GitHub issues](https://github.com/Purushothaman-natarajan/PINN/issues).
+
 ## Documentation
+
+Full site: **[purushothaman-natarajan.github.io/PINN](https://purushothaman-natarajan.github.io/PINN/)**
+(local: `pip install -e ".[docs]"` then `mkdocs serve`)
 
 | I want to… | Read |
 |---|---|
 | Run my first case | [Quickstart](docs/quickstart.md) |
+| Learn the methods + papers behind them | [Learn the methods](docs/learn.md) |
 | Understand the design | [Architecture](docs/architecture.md) |
-| Reuse with new parameters | [Configuration reference](docs/configuration.md), [Parameter guide](docs/parameters.md) |
-| Reuse with new equations | [Equation catalog](docs/equations.md), [Extending](docs/extending.md) |
-| Tune / debug training | [Training](docs/training.md), [FAQ](docs/faq.md) |
-| Validate / explain / sweep | [Validation](docs/validation.md), [Explainability](docs/explainability.md), [Sweeps](docs/sweeps.md) |
-| Call the code | [API reference](docs/api/index.md) |
-
-Full site: `pip install -e ".[docs]"` then `mkdocs serve`, or
-[GitHub Pages](https://Purushothaman-natarajan.github.io/PINN/) (see
-`docs/` + `mkdocs.yml`).
-
-## Repository structure
-
-```text
-configs/  default_trihybrid_ltne.yaml, ablation_study_config.yaml, schema.json
-src/core/ config_loader.py (YAML + schema validation), fluid_properties.py (A1-A7)
-src/models/ pinn_architecture.py (default 3x128 Tanh)
-src/physics/ governing_equations.py, boundary_conditions.py
-src/solvers/ pinn_trainer.py, numerical_rk45.py
-src/analysis/ validation.py, shap_explainer.py, lime_explainer.py, visualization.py
-tests/ test_physics.py, test_models.py, test_explain.py
-docs/ full documentation site (MkDocs Material)
-main.py  CLI: train | baseline | validate | shap | lime | explain | sweep | plot | all
-```
-
-## Loss
-
-```text
-Loss = w_pde * mean(R_MHD^2 + R_fluid^2 + R_solid^2 + R_conc^2)
-     + w_bc  * mean(R_bc_inner^2 + R_bc_outer^2)
-```
-
-Weights `pde_weight` / `bc_weight` come from YAML. See
-[Equation catalog](docs/equations.md) for the per-term mathematics.
-
-## Defaults
-
-- Architecture: 3 hidden layers × 128, Tanh, Xavier, Adam 1e-3
-- Domain: η ∈ [0, 4], 512 collocation points
-- Nanofluid: Al₂O₃ + Cu + TiO₂ in water (1% each), Brinkman + Maxwell stepwise
+| Change parameters | [Configuration reference](docs/configuration.md), [Parameter guide](docs/parameters.md) |
+| Change equations | [Equation catalog](docs/equations.md), [Extending](docs/extending.md) |
+| Tune or debug training | [Training](docs/training.md), [FAQ](docs/faq.md) |
+| Call functions directly | [API reference](docs/api/index.md) |
