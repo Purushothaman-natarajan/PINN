@@ -10,7 +10,7 @@ non-equilibrium (LTNE)**, and a transverse magnetic field.
   `phi` (concentration)
 - **Baseline:** `scipy.integrate.solve_bvp` mesh solver for validation
 - **Metrics:** MSE / RMSE / R² with `R² > 0.95` gate
-- **Explainability:** SHAP spatial + parameter sensitivity
+- **Explainability:** SHAP (global) + LIME (local) spatial & parameter sensitivity
 
 ## Structure
 
@@ -20,8 +20,8 @@ src/core/ config_loader.py, fluid_properties.py (A1-A7)
 src/models/ pinn_architecture.py (default 3x128 Tanh)
 src/physics/ governing_equations.py, boundary_conditions.py
 src/solvers/ pinn_trainer.py, numerical_rk45.py
-src/analysis/ validation.py, shap_explainer.py, visualization.py
-tests/ test_physics.py, test_models.py
+src/analysis/ validation.py, shap_explainer.py, lime_explainer.py, visualization.py
+tests/ test_physics.py, test_models.py, test_explain.py
 main.py  CLI
 ```
 
@@ -54,6 +54,8 @@ python main.py --config configs/default_trihybrid_ltne.yaml --mode train
 python main.py --config configs/default_trihybrid_ltne.yaml --mode baseline
 python main.py --config configs/default_trihybrid_ltne.yaml --mode validate
 python main.py --config configs/default_trihybrid_ltne.yaml --mode shap
+python main.py --config configs/default_trihybrid_ltne.yaml --mode lime
+python main.py --config configs/default_trihybrid_ltne.yaml --mode explain  # SHAP + LIME
 
 # Parameter sweep (ablation)
 python main.py --config configs/ablation_study_config.yaml --mode sweep

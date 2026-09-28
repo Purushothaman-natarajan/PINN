@@ -1,10 +1,13 @@
-"""CLI entry point: train PINN, run BVP baseline, validate, SHAP, plots.
+"""CLI entry point: train PINN, run BVP baseline, validate, explain, plots.
 
 Examples:
     python main.py --config configs/default_trihybrid_ltne.yaml --mode all
     python main.py --config configs/default_trihybrid_ltne.yaml --mode train
     python main.py --config configs/default_trihybrid_ltne.yaml --mode baseline
     python main.py --config configs/default_trihybrid_ltne.yaml --mode validate
+    python main.py --config configs/default_trihybrid_ltne.yaml --mode shap
+    python main.py --config configs/default_trihybrid_ltne.yaml --mode lime
+    python main.py --config configs/default_trihybrid_ltne.yaml --mode explain
     python main.py --config configs/ablation_study_config.yaml --mode sweep
 """
 
@@ -189,6 +192,44 @@ def cmd_shap(config: Dict[str, Any], args: argparse.Namespace) -> None:
     save_shap_summary(param_res, outdir)
 
 
+def cmd_lime(config: Dict[str, Any], args: argparse.Namespace) -> None:
+    """Run LIME spatial + parameter sensitivity analyses."""
+    from src.analysis.lime_explainer import (
+        parameter_lime,
+        save_lime_summary,
+        spatial_lime,
+    )
+    from src.core.config_loader import resolve_device
+    from src.core.fluid_properties import compute_coefficients
+    from src.models.pinn_architecture import build_pinn
+    from src.solvers.pinn_trainer import PINNTrainer
+
+    coeffs = compute_coefficients(config)
+    device = resolve_device(str(config["training"].get("device", "auto")))
+    model = build_pinn(config["model"])
+    trainer = PINNTrainer(model, config, coeffs, device=device)
+    final = Path(config["training"].get("checkpoint_dir", "checkpoints")) / "pinn_final.pt"
+    if final.is_file():
+        trainer.load(final)
+        print(f"Loaded checkpoint {final}")
+    eta0 = float(config["domain"].get("eta0", 4.0))
+    probes = np.linspace(0.0, eta0, 5)
+    spat = spatial_lime(trainer, probes)
+    print(f"Spatial LIME method: {spat.get('method')}")
+    for probe, per_out in zip(spat["eta_probes"], spat["explanations"]):
+        print(f"  eta={float(probe):.2f}: " + ", ".join(
+            f"{n} w={w[0]:+.3e}" for n, w in zip(spat["output_names"], per_out)
+        ))
+    outdir = Path(args.outdir or "data/processed/lime")
+    outdir.mkdir(parents=True, exist_ok=True)
+    save_lime_summary(spat, outdir)
+    grid = {"M": [0.0, 1.0, 2.0], "Rd": [0.0, 0.5, 1.0], "Fr": [0.0, 0.2, 0.5]}
+    param_res = parameter_lime(config, grid)
+    print(f"Param LIME method: {param_res.get('method')}")
+    print(f"Ranking: {param_res.get('ranking')}")
+    save_lime_summary(param_res, outdir)
+
+
 def build_parser() -> argparse.ArgumentParser:
     """Build the CLI argument parser."""
     p = argparse.ArgumentParser(description="Trihybrid LTNE PINN (PyTorch)")
@@ -196,7 +237,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument(
         "--mode",
         default="all",
-        choices=["train", "baseline", "validate", "all", "sweep", "shap", "plot"],
+        choices=["train", "baseline", "validate", "all", "sweep", "shap", "lime", "explain", "plot"],
     )
     p.add_argument("--checkpoint", default=None)
     p.add_argument("--outdir", default=None)
@@ -220,6 +261,11 @@ def main() -> None:
         cmd_validate(config)
     elif args.mode == "shap":
         cmd_shap(config, args)
+    elif args.mode == "lime":
+        cmd_lime(config, args)
+    elif args.mode == "explain":
+        cmd_shap(config, args)
+        cmd_lime(config, args)
     elif args.mode == "plot":
         cmd_validate(config)
     elif args.mode == "all":
