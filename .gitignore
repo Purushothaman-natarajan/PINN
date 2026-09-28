@@ -15,6 +15,9 @@ data/processed/*.csv
 data/processed/figures/
 data/processed/shap/
 data/processed/lime/
+# Local run logs
+mock_sweep.log
+mock_sweep.err
 # OS / editor
 .DS_Store
 Thumbs.db

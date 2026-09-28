@@ -1,0 +1,131 @@
+# Mock-data training configuration: 1000-point reference datasets plus
+# PINN training across parameter combinations.
+# Pipeline (each stage skipped when its output exists unless --force):
+#   generate (BVP, 1000-pt) -> clean -> train -> validate -> summary CSV
+# Docs: docs/mock_data.md (forthcoming) / README quickstart.
+
+domain:
+  eta0: 4.0
+  n_collocation: 1000
+  dtype: float32
+  seed: 0
+
+physics:
+  M: 1.0
+  Fr: 0.2
+  Kp: 0.5
+  Rd: 0.5
+  Pr: 6.2
+  Ec: 0.1
+  Hs: 1.0
+  Hsg: 1.0
+  Sc: 0.6
+  Kr: 0.2
+  Sr: 0.1
+  Q: 0.05
+  gamma_curv: 0.1
+  slip: 0.0
+  Bi_f: null
+  omega_ratio: 0.0
+  f_outer: 0.0
+
+nanofluid:
+  base_fluid: water
+  rho_f: 997.1
+  mu_f: 0.000891
+  k_f: 0.613
+  cp_f: 4179.0
+  sigma_f: 0.05
+  particles:
+    - name: Al2O3
+      rho: 3970.0
+      k: 40.0
+      cp: 765.0
+      sigma: 3.5e+6
+      phi: 0.01
+    - name: Cu
+      rho: 8933.0
+      k: 400.0
+      cp: 385.0
+      sigma: 5.96e+7
+      phi: 0.01
+    - name: TiO2
+      rho: 4250.0
+      k: 8.95
+      cp: 686.2
+      sigma: 2.38e+6
+      phi: 0.01
+
+equations:
+  momentum_terms:
+    - viscous
+    - inertia
+    - magnetic
+    - darcy
+    - forchheimer
+    - curvature
+  fluid_energy_terms:
+    - conduction
+    - radiation
+    - advection
+    - interphase
+    - joule
+    - heat_source
+  solid_energy_terms:
+    - conduction
+    - interphase
+  concentration_terms:
+    - diffusion
+    - advection
+    - reaction
+    - soret
+
+model:
+  input_dim: 1
+  output_dim: 4
+  hidden_layers: [128, 128, 128]
+  activation: tanh
+  initialization: xavier
+  output_activation: linear
+
+training:
+  epochs: 5000
+  lr: 0.001
+  optimizer: adam
+  scheduler: null
+  pde_weight: 1.0
+  bc_weight: 10.0
+  log_every: 250
+  device: auto
+  checkpoint_dir: checkpoints/mock1000
+  save_every: 2500
+
+solver:
+  bvp_mesh: 200
+  tol: 1.0e-8
+  max_nodes: 2000
+
+# Mock-data generation: dense BVP reference grids per parameter combo.
+mock:
+  n_points: 1000
+  noise: 0.0          # Gaussian sigma on fields; 0.0 = clean reference
+  seed: 0
+
+# Parameter combinations for generate -> clean -> train -> validate.
+param_grid:
+  M: [0.0, 1.0, 2.0]
+  Rd: [0.0, 0.5, 1.0]
+  Fr: [0.0, 0.2, 0.5]
+  Hs: [0.5, 1.0, 2.0]
+
+# Deterministic cleaning rules (see src/data/cleaning.py).
+cleaning:
+  clip: false
+  smooth_window: 0
+
+outputs:
+  raw_dir: data/raw
+  processed_dir: data/processed
+  baseline_file: baseline.npz
+  metrics_file: metrics.json
+  mock_summary: mock_sweep_summary.csv

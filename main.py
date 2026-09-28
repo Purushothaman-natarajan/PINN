@@ -230,6 +230,160 @@ def cmd_lime(config: Dict[str, Any], args: argparse.Namespace) -> None:
     save_lime_summary(param_res, outdir)
 
 
+def cmd_mock(config: Dict[str, Any], args: argparse.Namespace) -> None:
+    """Generate -> clean -> train -> validate for 1000-pt mock datasets.
+
+    For each parameter combination in the ``param_grid`` block (or the
+    single default point when the grid is empty): solve the BVP on a dense
+    grid, clean the dataset deterministically, train a PINN, and validate
+    it against the cleaned mock data. Stages whose outputs already exist
+    are skipped unless ``--force`` is given. A summary CSV is written last.
+    """
+    import json
+
+    import pandas as pd
+    import torch
+
+    from src.analysis.validation import evaluate_predictions, meets_accuracy_gate
+    from src.analysis.visualization import plot_all
+    from src.core.config_loader import resolve_device
+    from src.core.fluid_properties import compute_coefficients
+    from src.data.cleaning import clean_mock, save_clean_mock
+    from src.data.mock_data import (
+        combo_name,
+        generate_mock_data,
+        load_mock,
+        override_physics,
+        param_combos,
+        save_mock,
+    )
+    from src.models.pinn_architecture import build_pinn
+    from src.solvers.pinn_trainer import PINNTrainer
+
+    mock_cfg = config.get("mock", {})
+    n_points = int(mock_cfg.get("n_points", 1000))
+    noise = float(mock_cfg.get("noise", 0.0))
+    mock_seed = int(mock_cfg.get("seed", 0))
+    clean_cfg = config.get("cleaning", {})
+    grid = config.get("param_grid", {}) or {}
+    combos = param_combos(grid) if grid else [{}]
+    force = bool(getattr(args, "force", False))
+    start = int(getattr(args, "start", 0) or 0)
+    end = getattr(args, "end", None)
+    end = int(end) if end is not None else len(combos)
+    combos = combos[start:end]
+
+    raw_dir = Path(config.get("outputs", {}).get("raw_dir", "data/raw"))
+    processed_dir = Path(
+        config.get("outputs", {}).get("processed_dir", "data/processed")
+    )
+    base_ckpt = config["training"].get("checkpoint_dir", "checkpoints")
+    seed = int(config["domain"].get("seed", 0))
+    torch.manual_seed(seed)
+    np.random.seed(seed)
+
+    print(f"Mock pipeline: {len(combos)} combo(s), {n_points} points each")
+    records: list[Dict[str, Any]] = []
+    for idx, combo in enumerate(combos):
+        stem = combo_name(combo) if combo else "mock_default"
+        print(f"[{idx + 1}/{len(combos)}] {stem} {combo}")
+        record: Dict[str, Any] = {k: float(v) for k, v in combo.items()}
+        try:
+            # --- Generate (or reuse) ---
+            raw_path = raw_dir / f"{stem}.npz"
+            solver_relaxed = False
+            if raw_path.is_file() and not force:
+                raw = load_mock(raw_path)
+                print(f"  reuse raw {raw_path}")
+            else:
+                cfg_c = override_physics(config, combo)
+                coeffs = compute_coefficients(cfg_c)
+                try:
+                    raw = generate_mock_data(
+                        cfg_c, coeffs, n_points=n_points, noise=noise, seed=mock_seed
+                    )
+                except RuntimeError as exc:
+                    # Stiff corner (e.g. strong LTNE coupling): retry once
+                    # with a relaxed mesh/tolerance and record provenance.
+                    print(f"  BVP stiff ({exc}); retrying relaxed")
+                    cfg_c["solver"] = dict(cfg_c["solver"])
+                    cfg_c["solver"]["max_nodes"] = max(
+                        int(cfg_c["solver"].get("max_nodes", 2000)), 8000
+                    )
+                    cfg_c["solver"]["tol"] = 1e-6
+                    raw = generate_mock_data(
+                        cfg_c, coeffs, n_points=n_points, noise=noise, seed=mock_seed
+                    )
+                    solver_relaxed = True
+                save_mock(raw, raw_dir, stem)
+                print(f"  generated raw {raw_path} relaxed={solver_relaxed}")
+            record["n_raw"] = int(len(raw["eta"]))
+
+            # --- Clean (or reuse) ---
+            clean_path = processed_dir / f"{stem}.npz"
+            report_path = processed_dir / f"{stem}_cleaning_report.json"
+            if clean_path.is_file() and report_path.is_file() and not force:
+                clean = load_mock(clean_path)
+                with report_path.open(encoding="utf-8") as fh:
+                    report = json.load(fh)
+                print(f"  reuse clean {clean_path}")
+            else:
+                clean, report = clean_mock(
+                    raw,
+                    clip=bool(clean_cfg.get("clip", False)),
+                    smooth_window=int(clean_cfg.get("smooth_window", 0)),
+                )
+                report["solver_relaxed"] = bool(solver_relaxed)
+                save_clean_mock(clean, report, processed_dir, stem)
+                print(f"  cleaned {clean_path} {report}")
+            record["n_clean"] = int(report.get("n_out", len(clean["eta"])))
+            record["n_dropped"] = int(report.get("n_dropped_nonfinite", 0))
+            record["solver_relaxed"] = bool(report.get("solver_relaxed", False))
+
+            # --- Train (or reuse checkpoint) ---
+            cfg_c = override_physics(config, combo)
+            cfg_c["training"] = dict(cfg_c["training"])
+            cfg_c["training"]["checkpoint_dir"] = str(Path(base_ckpt) / stem)
+            coeffs = compute_coefficients(cfg_c)
+            device = resolve_device(str(cfg_c["training"].get("device", "auto")))
+            trainer = PINNTrainer(build_pinn(cfg_c["model"]), cfg_c, coeffs, device=device)
+            final_ckpt = Path(cfg_c["training"]["checkpoint_dir"]) / "pinn_final.pt"
+            if final_ckpt.is_file() and not force:
+                trainer.load(final_ckpt)
+                history = {"total": [], "pde": [], "bc": []}
+                print(f"  reuse checkpoint {final_ckpt}")
+            else:
+                history = trainer.train()
+
+            # --- Validate against cleaned mock ---
+            prediction = trainer.predict(clean["eta"])
+            metrics = evaluate_predictions(clean, prediction)
+            ok = meets_accuracy_gate(metrics, 0.95)
+            with (processed_dir / f"metrics_{stem}.json").open("w", encoding="utf-8") as fh:
+                json.dump(metrics, fh, indent=2)
+            plot_all(history, clean, prediction, processed_dir / "figures" / stem)
+            record["mean_r2"] = float(metrics["_mean"]["r2"])
+            for var in ("f", "theta_f", "theta_s", "phi"):
+                record[f"r2_{var}"] = float(metrics[var]["r2"])
+            if history["total"]:
+                record["final_loss"] = float(history["total"][-1])
+            record["gate"] = "PASS" if ok else "FAIL"
+            print(f"  mean R2={record['mean_r2']:.4f} gate={record['gate']}")
+        except Exception as exc:  # noqa: BLE001 - per-combo isolation
+            record["error"] = str(exc)
+            print(f"  ERROR: {exc}")
+        records.append(record)
+
+    summary = Path(
+        config.get("outputs", {}).get("mock_summary", "mock_sweep_summary.csv")
+    )
+    if not summary.is_absolute():
+        summary = processed_dir / summary.name
+    summary.parent.mkdir(parents=True, exist_ok=True)
+    pd.DataFrame(records).to_csv(summary, index=False)
+    print(f"Mock summary saved to {summary}")
+
+
 def build_parser() -> argparse.ArgumentParser:
     """Build the CLI argument parser."""
     p = argparse.ArgumentParser(description="Trihybrid LTNE PINN (PyTorch)")
@@ -237,8 +391,11 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument(
         "--mode",
         default="all",
-        choices=["train", "baseline", "validate", "all", "sweep", "shap", "lime", "explain", "plot"],
+        choices=["train", "baseline", "validate", "all", "sweep", "shap", "lime", "explain", "plot", "mock"],
     )
+    p.add_argument("--force", action="store_true", help="Regenerate existing artefacts")
+    p.add_argument("--start", type=int, default=0, help="Combo slice start (mock mode)")
+    p.add_argument("--end", type=int, default=None, help="Combo slice end (mock mode)")
     p.add_argument("--checkpoint", default=None)
     p.add_argument("--outdir", default=None)
     p.add_argument("--n-points", type=int, default=400)
@@ -268,6 +425,8 @@ def main() -> None:
         cmd_lime(config, args)
     elif args.mode == "plot":
         cmd_validate(config)
+    elif args.mode == "mock":
+        cmd_mock(config, args)
     elif args.mode == "all":
         trained = cmd_train(config, args)
         base = cmd_baseline(config, n_points=args.n_points)

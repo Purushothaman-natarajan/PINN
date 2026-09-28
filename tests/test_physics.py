@@ -104,6 +104,11 @@ def test_bvp_baseline_runs():
     # Dirichlet ends.
     assert abs(base["theta_f"][0] - 1.0) < 1e-3
     assert abs(base["theta_f"][-1]) < 1e-3
+    # Physicality regression: coupled LTNE temps must stay in [0, 1]
+    # (guards against sign errors in the BVP mirror, e.g. solid equation).
+    for key in ("theta_f", "theta_s", "phi"):
+        assert base[key].min() > -0.05, f"{key} undershoots: {base[key].min()}"
+        assert base[key].max() < 1.05, f"{key} overshoots: {base[key].max()}"
 
 
 def test_schema_accepts_default_config():

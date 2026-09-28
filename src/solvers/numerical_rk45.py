@@ -98,11 +98,15 @@ def _first_order_rhs(
         tf_rhs = tf_rhs + q_src * tf
     tfpp = -tf_rhs / k_eff if ("conduction" in e_terms or "radiation" in e_terms) else -tf_rhs
 
-    # Solid energy: tspp + Hsg(tf - ts) = 0.
-    hsg = float(coeffs.get("Hsg", 1.0))
+    # Solid energy: R_es = ts'' + Hsg*(tf - ts) = 0  ->  ts'' = Hsg*(ts - tf).
+    # Must match src/physics/governing_equations.py (no extra negation:
+    # the term below is already the rearranged right-hand side).
+    hsg = float(coeffs.get("Hsg", 0.0))
     if "conduction" in s_terms:
-        tspp = hsg * (ts - tf) if "interphase" in s_terms else np.zeros_like(eta)
-        tspp = -tspp  # move to lhs: tspp + Hsg(tf-ts)=0 -> tspp = Hsg(ts-tf)
+        if "interphase" in s_terms:
+            tspp = hsg * (ts - tf)
+        else:
+            tspp = np.zeros_like(eta, dtype=float)
     else:
         tspp = np.zeros_like(eta, dtype=float)
 
