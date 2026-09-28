@@ -779,6 +779,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#data-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        data (optional)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#outputs" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1646,6 +1657,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#data-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        data (optional)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#outputs" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2047,6 +2069,53 @@ solid equation algebraic).</p>
 </tr>
 </tbody>
 </table>
+<h2 id="data-optional"><code>data</code> (optional)<a class="headerlink" href="#data-optional" title="Permanent link">&para;</a></h2>
+<p>Supervised CSV/Excel dataset for training. Absent or <code>source: null</code> means
+pure physics training (today's default).</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>source</code></td>
+<td>string | <code>null</code></td>
+<td><code>null</code></td>
+<td>Path to <code>.csv</code>/<code>.xlsx</code>/<code>.xls</code> with <code>eta,f,theta_f,theta_s,phi</code> columns</td>
+</tr>
+<tr>
+<td><code>sheet</code></td>
+<td>int | string</td>
+<td><code>0</code></td>
+<td>Excel sheet index or name</td>
+</tr>
+<tr>
+<td><code>columns</code></td>
+<td>object | <code>null</code></td>
+<td><code>null</code></td>
+<td>Alias map, e.g. <code>{theta_f: T_fluid}</code></td>
+</tr>
+<tr>
+<td><code>weight</code></td>
+<td>float ≥ 0</td>
+<td><code>0.0</code></td>
+<td>Supervised loss weight (<code>0</code> = term disabled)</td>
+</tr>
+<tr>
+<td><code>batch</code></td>
+<td>int ≥ 1 | <code>null</code></td>
+<td><code>null</code></td>
+<td>Minibatch rows per epoch (<code>null</code> = full batch)</td>
+</tr>
+</tbody>
+</table>
+<p>CLI equivalents: <code>--data PATH</code>, <code>--data-weight W</code>. Full format spec and
+tuning advice: <a href="../datasets/#external-csvexcel-data">Datasets &amp; mock data</a>.</p>
 <h2 id="outputs"><code>outputs</code><a class="headerlink" href="#outputs" title="Permanent link">&para;</a></h2>
 <p><code>raw_dir</code>, <code>processed_dir</code>, <code>baseline_file</code>, <code>metrics_file</code> — directory and
 filename overrides for artefacts. Unknown top-level blocks are ignored

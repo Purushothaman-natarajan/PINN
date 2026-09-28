@@ -941,6 +941,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#external-csvexcel-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        External CSV/Excel data
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#reproducing-everything" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1635,6 +1646,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#external-csvexcel-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        External CSV/Excel data
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#reproducing-everything" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1812,8 +1834,59 @@ clean copies land in <code>data/processed</code>.</p>
 </tr>
 </tbody>
 </table>
-<p>The PINN itself never trains on the mock fields — loss is purely PDE + BC
-residuals. Mock data is the <strong>answer key</strong>, not the textbook.</p>
+<p>The PINN itself never trains on the mock fields by default — loss is
+purely PDE + BC residuals. Mock data is the <strong>answer key</strong>, not the
+textbook. To make measured data actually <em>train</em> the model, see
+<a href="#external-csvexcel-data">External CSV/Excel data</a> below.</p>
+<h2 id="external-csvexcel-data">External CSV/Excel data<a class="headerlink" href="#external-csvexcel-data" title="Permanent link">&para;</a></h2>
+<p>Measurement files (<code>.csv</code>, <code>.xlsx</code>, <code>.xls</code>) can be used two ways:</p>
+<table>
+<thead>
+<tr>
+<th>Use</th>
+<th>How</th>
+<th>Code change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Validation-only reference</td>
+<td>Load with <code>load_tabular()</code> → <code>clean_mock()</code> → <code>evaluate_predictions()</code></td>
+<td>None</td>
+</tr>
+<tr>
+<td>Supervised training</td>
+<td>Set the <code>data:</code> config block (or <code>--data</code> flag)</td>
+<td>None — built in</td>
+</tr>
+</tbody>
+</table>
+<p><strong>File format.</strong> One row per measurement station, columns:</p>
+<div class="highlight"><pre><span></span><code>eta, f, theta_f, theta_s, phi   (+ optional fp)
+0.0, 0.0, 1.0, 1.0, 1.0
+0.1, 0.09, 0.85, 0.9, 0.88
+...
+</code></pre></div>
+<p>Files with different column names use the alias map:
+<code>columns: {theta_f: T_fluid}</code>. Missing required columns raise an error
+naming the column and showing what's available.</p>
+<p><strong>Supervised training.</strong> With <code>data.source</code> set and <code>weight &gt; 0</code>, each
+epoch adds <code>w_data · MSE(model(η_data), fields)</code> to the loss:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">data</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">source</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">data/measurements.csv</span><span class="w">   </span><span class="c1"># or .xlsx (sheet: 0)</span>
+<span class="w">  </span><span class="nt">columns</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w">                   </span><span class="c1"># alias map if names differ</span>
+<span class="w">  </span><span class="nt">weight</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span><span class="w">                     </span><span class="c1"># 0.0 = pure physics (default)</span>
+<span class="w">  </span><span class="nt">batch</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w">                     </span><span class="c1"># minibatch rows/epoch (null = full batch)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># Quick experiment without editing YAML:</span>
+python<span class="w"> </span>main.py<span class="w"> </span>--config<span class="w"> </span>configs/default_trihybrid_ltne.yaml<span class="w"> </span>--mode<span class="w"> </span>train<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--data<span class="w"> </span>data/measurements.csv<span class="w"> </span>--data-weight<span class="w"> </span><span class="m">1</span>.0
+<span class="c1"># Convert between formats (.npz &lt;-&gt; .csv/.xlsx):</span>
+python<span class="w"> </span>main.py<span class="w"> </span>--mode<span class="w"> </span><span class="nb">export</span><span class="w"> </span>--data<span class="w"> </span>data/raw/baseline.npz<span class="w"> </span>--outdir<span class="w"> </span>data/processed<span class="w"> </span>--format<span class="w"> </span>csv
+</code></pre></div>
+<p>Start with <code>weight</code> comparable to <code>pde_weight</code> and raise it if wall
+profiles under-fit; watch the <code>data</code> curve in <code>loss_curve.png</code>. The term
+is off by default, so existing configs reproduce legacy numerics exactly.</p>
 <h2 id="reproducing-everything">Reproducing everything<a class="headerlink" href="#reproducing-everything" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><span class="c1"># Full pipeline for combos 14–21 (resumable slices; skips existing artefacts)</span>
 python<span class="w"> </span>main.py<span class="w"> </span>--config<span class="w"> </span>configs/mock_train_1000.yaml<span class="w"> </span>--mode<span class="w"> </span>mock<span class="w"> </span>--start<span class="w"> </span><span class="m">14</span><span class="w"> </span>--end<span class="w"> </span><span class="m">21</span>
