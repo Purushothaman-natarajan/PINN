@@ -111,6 +111,9 @@ nav:
       - Overview: api/index.md
       - core.config_loader: api/config_loader.md
       - core.fluid_properties: api/fluid_properties.md
+      - data.tabular: api/tabular.md
+      - data.mock_data: api/mock_data.md
+      - data.cleaning: api/cleaning.md
       - models.pinn_architecture: api/pinn_architecture.md
       - physics.governing_equations: api/governing_equations.md
       - physics.boundary_conditions: api/boundary_conditions.md

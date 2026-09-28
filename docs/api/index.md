@@ -5,6 +5,9 @@ for the data contracts, then dive into a module.
 
 - [core.config_loader](config_loader.md) — load + schema-validate configs
 - [core.fluid_properties](fluid_properties.md) — mixtures, A1–A7, coefficients
+- [data.tabular](tabular.md) — CSV/Excel load + export for supervised training
+- [data.mock_data](mock_data.md) — BVP mock-dataset generation
+- [data.cleaning](cleaning.md) — deterministic cleaning + reports
 - [models.pinn_architecture](pinn_architecture.md) — network construction
 - [physics.governing_equations](governing_equations.md) — residuals
 - [physics.boundary_conditions](boundary_conditions.md) — wall residuals
