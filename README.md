@@ -31,6 +31,9 @@ SHAP (global) + LIME (local) analysis.
 
 ## Quickstart
 
+> **Never used a terminal?** Start with the click-by-click
+> [Start here guide](docs/start-here.md) — no experience assumed.
+
 ```bash
 git clone https://github.com/Purushothaman-natarajan/PINN.git
 cd PINN
@@ -150,6 +153,7 @@ Full site: **[purushothaman-natarajan.github.io/PINN](https://purushothaman-nata
 
 | I want to… | Read |
 |---|---|
+| Run my first case, step by step from zero | [Start here](docs/start-here.md) |
 | Run my first case | [Quickstart](docs/quickstart.md) |
 | Learn the methods + papers behind them | [Learn the methods](docs/learn.md) |
 | Understand the design | [Architecture](docs/architecture.md) |

@@ -89,7 +89,9 @@ plugins:
 
 nav:
   - Home: index.md
+  - Start here (beginners): start-here.md
   - Learn the methods: learn.md
+  - Glossary: glossary.md
   - Getting started:
       - Quickstart: quickstart.md
       - Architecture: architecture.md

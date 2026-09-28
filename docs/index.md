@@ -10,6 +10,9 @@ magnetic field**.
 [Learn the methods](learn.md){ .md-button }
 [GitHub](https://github.com/Purushothaman-natarajan/PINN){ .md-button }
 
+> **Never used a terminal before?** Follow
+> [Start here — no experience needed](start-here.md), then come back.
+
 The headline idea: **the equations live in the YAML config, not in the
 code.** Toggle physical terms, swap nanoparticles, resize the network or
 retune training — all without editing Python. See
@@ -29,6 +32,7 @@ retune training — all without editing Python. See
 
 ## Where to go next
 
+- **Total beginner?** → [Start here](start-here.md) (terminal, install, first run)
 - **New here?** → [Quickstart](quickstart.md) (5 minutes, baseline first)
 - **Reuse with new parameters?** → [Configuration reference](configuration.md),
   then [Parameter guide](parameters.md)

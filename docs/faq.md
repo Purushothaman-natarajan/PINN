@@ -1,5 +1,30 @@
 # FAQ & troubleshooting
 
+> **Setting up for the first time?** [Start here](start-here.md) covers
+> installing Python/Git, opening a terminal, and your first run — including
+> what to do when each step fails. Below are the most common setup errors:
+
+## Setup (first-time)
+
+**`python is not recognized` (Windows).**
+Python isn't on PATH. Re-run the installer from
+[python.org](https://www.python.org/downloads/) and tick **“Add python.exe
+to PATH”** on the first screen, then open a fresh terminal.
+
+**`pip` complains about `externally-managed-environment` (Linux).**
+You're using system Python. Create the workspace first (`python3 -m venv
+.venv`), activate it (prompt shows `(.venv)`), then retry.
+
+**`git: command not found`.**
+Install Git ([git-scm.com](https://git-scm.com/downloads)), close and
+reopen the terminal, then retry.
+
+**Tests fail right after install.**
+Make sure the `(.venv)` prefix is showing (workspace active) and you ran
+`pip install -r requirements.txt` to the end with no red `ERROR`. Then
+paste the last 20 lines into a
+[GitHub issue](https://github.com/Purushothaman-natarajan/PINN/issues).
+
 ## Training
 
 **Loss stalls, all fields poor.**
