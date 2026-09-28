@@ -28,8 +28,10 @@ def plot_loss(history: Dict[str, List[float]], outdir: str | Path) -> Path:
     outdir = _ensure_dir(outdir)
     plt.figure(figsize=(7, 4.5))
     plotted = False
-    for key in ("total", "pde", "bc"):
+    for key in ("total", "pde", "bc", "data"):
         if key in history and len(history[key]) > 0:
+            if key == "data" and not any(v != 0.0 for v in history[key]):
+                continue  # supervised term disabled: skip flat zero curve
             plt.semilogy(history[key], label=key)
             plotted = True
     plt.xlabel("Iteration")
@@ -122,7 +124,9 @@ def plot_all(
 ) -> List[Path]:
     """Generate every standard figure that has data available."""
     paths: List[Path] = []
-    if history and any(len(history.get(k, [])) > 0 for k in ("total", "pde", "bc")):
+    if history and any(
+        len(history.get(k, [])) > 0 for k in ("total", "pde", "bc", "data")
+    ):
         paths.append(plot_loss(history, outdir))
     if baseline is not None and prediction is not None:
         paths.append(plot_profiles(baseline, prediction, outdir))

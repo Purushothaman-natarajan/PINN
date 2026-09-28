@@ -30,6 +30,44 @@ def _load_full_config(path: str) -> Dict[str, Any]:
     return load_config(path)
 
 
+def _load_supervised_data(
+    config: Dict[str, Any], args: argparse.Namespace
+) -> tuple[Dict[str, Any] | None, float, int | None]:
+    """Resolve supervised CSV/Excel data from config and CLI overrides.
+
+    Args:
+        config: Full config dict with optional ``data`` block.
+        args: CLI args with optional ``data`` / ``data_weight`` overrides.
+
+    Returns:
+        Tuple of (cleaned dataset dict or None, data weight, batch size).
+    """
+    from src.data.tabular import load_and_clean
+
+    data_cfg = dict(config.get("data", {}) or {})
+    source = getattr(args, "data", None) or data_cfg.get("source")
+    weight = getattr(args, "data_weight", None)
+    weight = float(weight) if weight is not None else float(data_cfg.get("weight", 0.0))
+    batch = data_cfg.get("batch", None)
+    if source is None or weight == 0.0:
+        if source is not None and weight == 0.0:
+            print("Supervised source set but weight is 0: training pure PDE+BC")
+        return None, 0.0, batch
+    clean_cfg = config.get("cleaning", {})
+    clean, report = load_and_clean(
+        source,
+        columns=data_cfg.get("columns"),
+        sheet=data_cfg.get("sheet", 0),
+        clip=bool(clean_cfg.get("clip", False)),
+        smooth_window=int(clean_cfg.get("smooth_window", 0)),
+    )
+    print(f"Supervised data: {source} ({report['n_out']}/{report['n_in']} rows kept)")
+    if report.get("warnings"):
+        for warning in report["warnings"]:
+            print(f"  cleaning: {warning}")
+    return clean, weight, batch
+
+
 def cmd_train(config: Dict[str, Any], args: argparse.Namespace) -> Dict[str, Any]:
     """Train the PINN and return artefacts."""
     import torch
@@ -46,13 +84,51 @@ def cmd_train(config: Dict[str, Any], args: argparse.Namespace) -> Dict[str, Any
     coeffs = compute_coefficients(config)
     device = resolve_device(str(config["training"].get("device", "auto")))
     model = build_pinn(config["model"])
-    trainer = PINNTrainer(model, config, coeffs, device=device)
+    supervised, data_weight, data_batch = _load_supervised_data(config, args)
+    if supervised is not None:
+        print(f"Supervised loss enabled with weight {data_weight}")
+    trainer = PINNTrainer(
+        model,
+        config,
+        coeffs,
+        device=device,
+        supervised_data=supervised,
+        data_weight=data_weight,
+        data_batch=data_batch,
+    )
     ckpt = args.checkpoint
     if ckpt and Path(ckpt).is_file():
         trainer.load(ckpt)
         print(f"Resumed from {ckpt}")
     history = trainer.train()
     return {"trainer": trainer, "coeffs": coeffs, "history": history}
+
+
+def cmd_export(args: argparse.Namespace) -> None:
+    """Convert a dataset file between .npz and CSV/Excel formats."""
+    from src.data.mock_data import load_mock
+    from src.data.tabular import save_tabular
+
+    src = Path(args.data)
+    if not src.is_file():
+        raise FileNotFoundError(f"Nothing to export: {src}")
+    fmt = (args.format or "").lower() or None
+    outdir = Path(args.outdir or "data/processed")
+    outdir.mkdir(parents=True, exist_ok=True)
+    if src.suffix.lower() == ".npz":
+        data = load_mock(src)
+        ext = {"csv": ".csv", "excel": ".xlsx", None: ".csv"}[fmt]
+        dest = outdir / f"{src.stem}{ext}"
+        save_tabular(data, dest, fmt=fmt or "csv")
+    else:
+        from src.data.tabular import load_tabular
+
+        data = load_tabular(src)
+        dest = outdir / f"{src.stem}.npz"
+        import numpy as np
+
+        np.savez_compressed(dest, **{k: np.asarray(v) for k, v in data.items()})
+    print(f"Exported {src} -> {dest}")
 
 
 def cmd_baseline(config: Dict[str, Any], n_points: int = 400) -> Dict[str, Any]:
@@ -391,7 +467,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument(
         "--mode",
         default="all",
-        choices=["train", "baseline", "validate", "all", "sweep", "shap", "lime", "explain", "plot", "mock"],
+        choices=["train", "baseline", "validate", "all", "sweep", "shap", "lime", "explain", "plot", "mock", "export"],
     )
     p.add_argument("--force", action="store_true", help="Regenerate existing artefacts")
     p.add_argument("--start", type=int, default=0, help="Combo slice start (mock mode)")
@@ -399,6 +475,9 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--checkpoint", default=None)
     p.add_argument("--outdir", default=None)
     p.add_argument("--n-points", type=int, default=400)
+    p.add_argument("--data", default=None, help="Supervised CSV/Excel file (train mode)")
+    p.add_argument("--data-weight", type=float, default=None, help="Supervised loss weight")
+    p.add_argument("--format", default=None, help="Export format: csv | excel")
     return p
 
 
@@ -408,6 +487,9 @@ def main() -> None:
     args = parser.parse_args()
     if args.mode == "sweep":
         cmd_sweep(args.config, args)
+        return
+    if args.mode == "export":
+        cmd_export(args)
         return
     config = _load_full_config(args.config)
     if args.mode == "train":

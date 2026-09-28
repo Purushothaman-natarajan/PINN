@@ -24,6 +24,13 @@ class PINNTrainer:
         config: Full config dictionary.
         coeffs: Flat physics/nanofluid coefficient dictionary.
         device: Torch device override (defaults to config resolution).
+        supervised_data: Optional labelled dataset dict with ``eta`` plus
+            any of ``f``, ``theta_f``, ``theta_s``, ``phi`` arrays, e.g.
+            loaded from CSV/Excel via :mod:`src.data.tabular`. Enables the
+            supervised data-misfit loss term (off by default).
+        data_weight: Weight of the supervised term (0.0 reproduces the
+            legacy PDE+BC-only training exactly).
+        data_batch: Minibatch rows per epoch; None uses the full dataset.
     """
 
     def __init__(
@@ -32,6 +39,9 @@ class PINNTrainer:
         config: Dict[str, Any],
         coeffs: Dict[str, Any],
         device: torch.device | None = None,
+        supervised_data: Dict[str, Any] | None = None,
+        data_weight: float = 0.0,
+        data_batch: int | None = None,
     ) -> None:
         from src.core.config_loader import resolve_device
 
@@ -60,6 +70,13 @@ class PINNTrainer:
         dtype_name = str(domain.get("dtype", "float32")).lower()
         self.dtype = torch.float64 if dtype_name == "float64" else torch.float32
 
+        self.data_weight = float(data_weight)
+        self.data_batch = data_batch
+        self.data_eta: torch.Tensor | None = None
+        self.data_fields: torch.Tensor | None = None
+        if supervised_data is not None:
+            self._attach_supervised_data(supervised_data)
+
         opt_name = str(train_cfg.get("optimizer", "adam")).lower()
         if opt_name == "adam":
             self.optimizer = torch.optim.Adam(self.model.parameters(), lr=self.lr)
@@ -84,7 +101,55 @@ class PINNTrainer:
             "total": [],
             "pde": [],
             "bc": [],
+            "data": [],
         }
+
+    def _attach_supervised_data(self, data: Dict[str, Any]) -> None:
+        """Convert a labelled dataset dict to device tensors.
+
+        Args:
+            data: Dict with ``eta`` and any of ``f``, ``theta_f``,
+                ``theta_s``, ``phi`` arrays.
+
+        Raises:
+            ValueError: If ``eta`` is missing or no label field is present.
+        """
+        import numpy as np
+
+        if "eta" not in data:
+            raise ValueError("Supervised data must contain an 'eta' column")
+        fields = [k for k in ("f", "theta_f", "theta_s", "phi") if k in data]
+        if not fields:
+            raise ValueError(
+                "Supervised data needs at least one of f/theta_f/theta_s/phi"
+            )
+        eta = np.asarray(data["eta"], dtype=float).reshape(-1, 1)
+        stacked = np.stack(
+            [np.asarray(data[k], dtype=float).reshape(-1) for k in fields], axis=1
+        )
+        if len(eta) != len(stacked):
+            raise ValueError("Supervised eta/label length mismatch")
+        self.data_fields_keys = fields
+        self.data_eta = torch.tensor(eta, device=self.device, dtype=self.dtype)
+        self.data_fields = torch.tensor(stacked, device=self.device, dtype=self.dtype)
+
+    def _data_loss(self) -> torch.Tensor:
+        """Mean-squared misfit against supervised data (0 when disabled)."""
+        if self.data_eta is None or self.data_fields is None or self.data_weight == 0.0:
+            return torch.tensor(0.0, device=self.device, dtype=self.dtype)
+        self.model.train()
+        if self.data_batch is not None and self.data_batch < len(self.data_eta):
+            idx = torch.randperm(len(self.data_eta), device=self.device)[: self.data_batch]
+            eta = self.data_eta[idx]
+            target = self.data_fields[idx]
+        else:
+            eta, target = self.data_eta, self.data_fields
+        out = self.model(eta)
+        col = {"f": 0, "theta_f": 1, "theta_s": 2, "phi": 3}
+        pred = torch.stack(
+            [out[:, col[k]] for k in self.data_fields_keys], dim=1
+        )
+        return torch.mean((pred - target) ** 2)
 
     def _sample_collocation(self) -> torch.Tensor:
         """Sample interior collocation points in (0, eta0)."""
@@ -121,10 +186,13 @@ class PINNTrainer:
         return torch.mean(bc["total"] ** 2)
 
     def train_step(self) -> Dict[str, float]:
-        """Single Adam optimisation step.
+        """Single optimisation step (Adam or LBFGS).
+
+        Loss = ``w_pde*L_pde + w_bc*L_bc + w_data*L_data`` with weights
+        from config / constructor (``w_data = 0`` disables the term).
 
         Returns:
-            Dict with total, pde, bc losses for this step.
+            Dict with total, pde, bc, data losses for this step.
         """
         self.model.train()
         self.optimizer.zero_grad()
@@ -132,7 +200,12 @@ class PINNTrainer:
         # Ensure model dtype consistency for float64 configs.
         loss_pde = self._pde_loss(eta)
         loss_bc = self._bc_loss()
-        loss = self.pde_weight * loss_pde + self.bc_weight * loss_bc
+        loss_data = self._data_loss()
+        loss = (
+            self.pde_weight * loss_pde
+            + self.bc_weight * loss_bc
+            + self.data_weight * loss_data
+        )
         loss.backward()
         torch.nn.utils.clip_grad_norm_(self.model.parameters(), 1.0)
         if isinstance(self.optimizer, torch.optim.LBFGS):
@@ -142,7 +215,12 @@ class PINNTrainer:
                 e2 = self._sample_collocation()
                 l_p = self._pde_loss(e2)
                 l_b = self._bc_loss()
-                l_t = self.pde_weight * l_p + self.bc_weight * l_b
+                l_d = self._data_loss()
+                l_t = (
+                    self.pde_weight * l_p
+                    + self.bc_weight * l_b
+                    + self.data_weight * l_d
+                )
                 l_t.backward()
                 return l_t
 
@@ -155,6 +233,7 @@ class PINNTrainer:
             "total": float(loss.detach().cpu()),
             "pde": float(loss_pde.detach().cpu()),
             "bc": float(loss_bc.detach().cpu()),
+            "data": float(loss_data.detach().cpu()),
         }
 
     def train(self) -> Dict[str, List[float]]:
@@ -168,11 +247,14 @@ class PINNTrainer:
             for k, v in losses.items():
                 self.history[k].append(v)
             if epoch % self.log_every == 0 or epoch == 1:
-                print(
+                msg = (
                     f"[epoch {epoch:06d}/{self.epochs}] "
                     f"total={losses['total']:.3e} "
                     f"pde={losses['pde']:.3e} bc={losses['bc']:.3e}"
                 )
+                if self.data_weight != 0.0:
+                    msg += f" data={losses['data']:.3e}"
+                print(msg)
             if epoch % self.save_every == 0:
                 self.save(self.ckpt_dir / f"pinn_epoch{epoch}.pt")
         self.save(self.ckpt_dir / "pinn_final.pt")

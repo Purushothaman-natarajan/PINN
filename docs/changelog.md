@@ -6,6 +6,14 @@ All notable changes to this project are recorded here.
 
 ### Added
 
+- External CSV/Excel training data: `src/data/tabular.py`
+  (load/export/aliases), optional supervised misfit loss in `PINNTrainer`
+  (`data_weight`, `data_batch`, `data` history curve), `data:` config block
+  + schema, `--data/--data-weight/--format` flags, `--mode export`
+- `openpyxl` dependency for Excel I/O
+
+### Added
+
 - Full documentation site (`docs/`, MkDocs Material): quickstart,
   architecture, configuration reference, equation catalog, parameter guide,
   extension recipes, training/validation/XAI/sweep guides, FAQ, API reference

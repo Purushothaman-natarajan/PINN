@@ -122,6 +122,17 @@
         "max_nodes": {"type": "integer", "minimum": 100, "default": 2000}
       }
     },
+    "data": {
+      "type": ["object", "null"],
+      "description": "Optional supervised dataset (CSV/Excel) for training.",
+      "properties": {
+        "source": {"type": ["string", "null"], "default": null},
+        "sheet": {"type": ["integer", "string"], "default": 0},
+        "columns": {"type": ["object", "null"], "default": null},
+        "weight": {"type": "number", "minimum": 0, "default": 0.0},
+        "batch": {"type": ["integer", "null"], "minimum": 1, "default": null}
+      }
+    },
     "outputs": {
       "type": "object",
       "properties": {

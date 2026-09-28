@@ -93,8 +93,55 @@ clean copies land in `data/processed`.
 | `mock` pipeline | `data/processed/mock_*.npz` | Per-combo reference truth |
 | SHAP / LIME sweeps | Sweep tables (BVP QoIs, not stored) | See [Explainability](explainability.md) |
 
-The PINN itself never trains on the mock fields — loss is purely PDE + BC
-residuals. Mock data is the **answer key**, not the textbook.
+The PINN itself never trains on the mock fields by default — loss is
+purely PDE + BC residuals. Mock data is the **answer key**, not the
+textbook. To make measured data actually *train* the model, see
+[External CSV/Excel data](#external-csvexcel-data) below.
+
+## External CSV/Excel data
+
+Measurement files (`.csv`, `.xlsx`, `.xls`) can be used two ways:
+
+| Use | How | Code change |
+|---|---|---|
+| Validation-only reference | Load with `load_tabular()` → `clean_mock()` → `evaluate_predictions()` | None |
+| Supervised training | Set the `data:` config block (or `--data` flag) | None — built in |
+
+**File format.** One row per measurement station, columns:
+
+```text
+eta, f, theta_f, theta_s, phi   (+ optional fp)
+0.0, 0.0, 1.0, 1.0, 1.0
+0.1, 0.09, 0.85, 0.9, 0.88
+...
+```
+
+Files with different column names use the alias map:
+`columns: {theta_f: T_fluid}`. Missing required columns raise an error
+naming the column and showing what's available.
+
+**Supervised training.** With `data.source` set and `weight > 0`, each
+epoch adds `w_data · MSE(model(η_data), fields)` to the loss:
+
+```yaml
+data:
+  source: data/measurements.csv   # or .xlsx (sheet: 0)
+  columns: null                   # alias map if names differ
+  weight: 1.0                     # 0.0 = pure physics (default)
+  batch: null                     # minibatch rows/epoch (null = full batch)
+```
+
+```bash
+# Quick experiment without editing YAML:
+python main.py --config configs/default_trihybrid_ltne.yaml --mode train \
+  --data data/measurements.csv --data-weight 1.0
+# Convert between formats (.npz <-> .csv/.xlsx):
+python main.py --mode export --data data/raw/baseline.npz --outdir data/processed --format csv
+```
+
+Start with `weight` comparable to `pde_weight` and raise it if wall
+profiles under-fit; watch the `data` curve in `loss_curve.png`. The term
+is off by default, so existing configs reproduce legacy numerics exactly.
 
 ## Reproducing everything
 

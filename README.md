@@ -54,6 +54,11 @@ python main.py --config configs/mock_train_1000.yaml --mode mock
 Flags: `--start N --end M` trains only combos N–M (resumable),
 `--force` regenerates existing artefacts.
 
+**External data:** train on your own CSV/Excel measurements with the
+`data:` config block (or `--data file.csv --data-weight 1.0`) — adds a
+supervised misfit term to the loss. Convert formats with
+`--mode export`. Details: [Datasets & mock data](docs/datasets.md).
+
 **3. Individual stages**, all driven by `--config`:
 
 ```bash

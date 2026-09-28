@@ -104,6 +104,22 @@ solid equation algebraic).
 | `tol` | float > 0 | `1e-8` | BVP tolerance |
 | `max_nodes` | int | `2000` | Adaptive mesh cap |
 
+## `data` (optional)
+
+Supervised CSV/Excel dataset for training. Absent or `source: null` means
+pure physics training (today's default).
+
+| Key | Type | Default | Meaning |
+|---|---|---|---|
+| `source` | string \| `null` | `null` | Path to `.csv`/`.xlsx`/`.xls` with `eta,f,theta_f,theta_s,phi` columns |
+| `sheet` | int \| string | `0` | Excel sheet index or name |
+| `columns` | object \| `null` | `null` | Alias map, e.g. `{theta_f: T_fluid}` |
+| `weight` | float ≥ 0 | `0.0` | Supervised loss weight (`0` = term disabled) |
+| `batch` | int ≥ 1 \| `null` | `null` | Minibatch rows per epoch (`null` = full batch) |
+
+CLI equivalents: `--data PATH`, `--data-weight W`. Full format spec and
+tuning advice: [Datasets & mock data](datasets.md#external-csvexcel-data).
+
 ## `outputs`
 
 `raw_dir`, `processed_dir`, `baseline_file`, `metrics_file` — directory and

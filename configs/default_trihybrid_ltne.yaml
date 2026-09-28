@@ -106,6 +106,16 @@ training:
   checkpoint_dir: checkpoints
   save_every: 2000
 
+# Optional supervised dataset (CSV/Excel) for training. Null source means
+# pure physics training (PDE + BC loss only). Set source + weight > 0 to
+# add a data-misfit term. Docs: docs/datasets.md.
+data:
+  source: null            # e.g. data/measurements.csv
+  sheet: 0                # excel sheet index or name
+  columns: null           # alias map, e.g. {theta_f: T_fluid}
+  weight: 0.0             # supervised loss weight (0 = off)
+  batch: null             # minibatch rows per epoch (null = full batch)
+
 solver:
   bvp_mesh: 200
   tol: 1.0e-8
